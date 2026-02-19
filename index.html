@@ -1,1385 +1,1968 @@
-    <!DOCTYPE html>
-    <html lang="id">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Dashboard Saldo Kapten — Premium Holographic</title>
-        
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script src="https://unpkg.com/lucide@latest"></script>
-    
-        <style>
-            :root {
-                --bg: #0f1419;
-                --card: #1a1f28;
-                --border: rgba(255, 215, 0, 0.15);
-                --gold: #ffd700;
-                --silver: #c0c0c0;
-                --accent: #ffa500;
-                --text: #f5e6d3;
-                --text-muted: #a8957a;
-                --success: #22cc88;
-                --danger: #ff4444;
-                --warning: #ff8800;
-            }
-    
-            body {
-                font-family: 'Inter', sans-serif;
-                background: linear-gradient(135deg, #0a0e14 0%, #151921 100%);
-                color: var(--text);
-                min-height: 100vh;
-                /* Performance optimization for smoother rendering */
-                text-rendering: optimizeSpeed;
-                -webkit-font-smoothing: antialiased;
-            }
-    
-            /* Use hardware acceleration for fixed elements */
-            header, .modal-overlay {
-                will-change: transform, opacity;
-                transform: translateZ(0);
-            }
-    
-            .container-custom {
-                max-width: 1600px;
-                margin: 0 auto;
-                padding: 24px;
-            }
-    
-            .logo-title {
-                font-family: 'Exo 2', sans-serif;
-                font-size: 28px;
-                font-weight: 800;
-                background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #c0c0c0 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                letter-spacing: 2px;
-            }
-    
-            @media (min-width: 768px) {
-                .logo-title { font-size: 36px; }
-            }
-    
-            .glass-input, .glass-select {
-                background: rgba(255, 255, 255, 0.03);
-                backdrop-filter: blur(12px);
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                color: var(--text);
-                font-family: 'Inter', sans-serif;
-                font-size: 14px;
-                transition: all 0.3s ease;
-                padding: 8px 12px;
-            }
-    
-            .glass-select {
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-                border: 1px solid rgba(255, 215, 0, 0.2);
-                position: relative;
-                appearance: none;
-                padding-right: 32px;
-                background-image: 
-                    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffd700' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
-                background-repeat: no-repeat;
-                background-position: right 10px center;
-                padding-right: 36px;
-            }
-    
-            .glass-select option {
-                background: linear-gradient(135deg, #1a1f28 0%, #0f1419 100%);
-                color: var(--text);
-                border: none;
-                padding: 10px;
-            }
-    
-            .glass-select option:checked {
-                background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.1) 100%);
-                color: var(--gold);
-            }
-    
-            .glass-input:focus, .glass-select:focus {
-                outline: none;
-                border-color: rgba(255, 215, 0, 0.4);
-                box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-            }
-    
-            .glass-select:hover {
-                border-color: rgba(255, 215, 0, 0.35);
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-                box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
-            }
-    
-            .btn-custom {
-                background: linear-gradient(135deg, var(--gold), var(--accent));
-                color: #111;
-                border-radius: 8px;
-                border: none;
-                font-weight: 700;
-                font-family: 'Exo 2', sans-serif;
-                cursor: pointer;
-                box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-                transition: all 0.3s ease;
-            }
-    
-            .btn-custom:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            }
-    
-            .card-custom {
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
-                backdrop-filter: blur(16px);
-                border: 1px solid var(--border);
-                border-radius: 12px;
-                padding: 24px;
-                position: relative;
-                overflow: hidden;
-                /* Improve scrolling performance */
-                contain: content;
-            }
-    
-            .card-custom::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                left: 0;
-                right: 0;
-                height: 2px;
-                background: linear-gradient(90deg, var(--gold), var(--silver), var(--accent));
-                opacity: 0.6;
-            }
-    
-            .card-title {
-                font-family: 'Exo 2', sans-serif;
-                font-size: 12px;
-                font-weight: 600;
-                color: var(--text-muted);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-                margin-bottom: 12px;
-            }
-    
-            .card-value {
-                font-family: 'Exo 2', sans-serif;
-                font-size: 32px;
-                font-weight: 800;
-                background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #c0c0c0 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-            }
-    
-            .table-title {
-                font-family: 'Exo 2', sans-serif;
-                font-weight: 800;
-                background: linear-gradient(135deg, #ffd700 0%, #ffa500 50%, #c0c0c0 100%);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
-                letter-spacing: 1.5px;
-            }
-    
-            .pill {
-                display: inline-block;
-                padding: 4px 8px;
-                border-radius: 20px;
-                font-family: 'Exo 2', sans-serif;
-                font-weight: 700;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-                font-size: 10px;
-            }
-    
-            .pill.success {
-                background: rgba(34, 204, 136, 0.15);
-                color: var(--success);
-                border: 1px solid rgba(34, 204, 136, 0.3);
-            }
-    
-            .pill.danger {
-                background: rgba(255, 68, 68, 0.15);
-                color: var(--danger);
-                border: 1px solid rgba(255, 68, 68, 0.3);
-            }
-    
-            .modal-overlay {
-                background: rgba(0, 0, 0, 0.8);
-                backdrop-filter: blur(5px);
-                position: fixed;
-                inset: 0;
-                z-index: 50;
-                display: none;
-                align-items: center;
-                justify-content: center;
-                padding: 1rem;
-            }
-    
-            .modal-overlay.active {
-                display: flex;
-            }
-    
-            .modal-content {
-                background: linear-gradient(135deg, rgba(26, 31, 40, 0.98) 0%, rgba(15, 20, 25, 0.98) 100%);
-                border: 2px solid rgba(255, 68, 68, 0.5);
-                border-radius: 16px;
-                padding: 32px;
-                box-shadow: 0 0 80px rgba(255, 68, 68, 0.6), inset 0 0 50px rgba(255, 68, 68, 0.1);
-                max-width: 600px;
-                width: 100%;
-                animation: slideIn 0.3s ease-out;
-                /* Optimization */
-                will-change: transform, opacity;
-            }
-    
-            @keyframes slideIn {
-                from { transform: translateY(20px); opacity: 0; }
-                to { transform: translateY(0); opacity: 1; }
-            }
-    
-            ::-webkit-scrollbar { width: 6px; height: 6px; }
-            ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.02); }
-            ::-webkit-scrollbar-thumb { background: rgba(255, 215, 0, 0.2); border-radius: 3px; }
-            ::-webkit-scrollbar-thumb:hover { background: rgba(255, 215, 0, 0.4); }
-    
-            .animate-spin { animation: spin 1s linear infinite; }
-            @keyframes spin { to { transform: rotate(360deg); } }
-    
-            .input-group {
-                background: rgba(255, 255, 255, 0.03);
-                backdrop-filter: blur(12px);
-                border: 1px solid var(--border);
-                border-radius: 8px;
-                padding: 8px 12px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-    
-            .input-group input {
-                background: transparent;
-                border: none;
-                color: var(--text);
-                font-size: 14px;
-                flex: 1;
-                outline: none;
-                font-family: 'Inter', sans-serif;
-            }
-    
-            .input-group button {
-                background: rgba(34, 204, 136, 0.2);
-                border: 1px solid rgba(34, 204, 136, 0.3);
-                color: var(--success);
-                padding: 4px 8px;
-                border-radius: 4px;
-                cursor: pointer;
-                font-size: 12px;
-                font-weight: 600;
-                transition: all 0.2s;
-            }
-    
-            .input-group button:hover {
-                background: rgba(34, 204, 136, 0.3);
-                border-color: rgba(34, 204, 136, 0.5);
-            }
-    
-            .attention-btn {
-                position: relative;
-                border: 1px solid rgba(255, 68, 68, 0.5);
-                background: rgba(255, 68, 68, 0.1);
-                color: var(--danger);
-                padding: 8px 16px;
-                border-radius: 8px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                font-weight: bold;
-                transition: all 0.3s;
-                cursor: pointer;
-            }
-            
-            .attention-btn:hover {
-                background: rgba(255, 68, 68, 0.2);
-            }
-    
-            .attention-btn.disabled {
-                opacity: 0.5;
-                filter: grayscale(1);
-                cursor: not-allowed;
-            }
-    
-            .attention-badge {
-                position: absolute;
-                top: -8px;
-                right: -8px;
-                background: var(--danger);
-                color: black;
-                font-size: 10px;
-                font-weight: bold;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            
-            /* Optimization: Use CSS containment for tables to prevent full re-layouts */
-            .overflow-x-auto {
-                contain: layout paint style;
-            }
-        </style>
-    </head>
-    <body class="pb-20">
-    
-        <header class="pt-6 pb-4 sticky top-0 z-30 bg-[rgba(15,20,25,0.9)] backdrop-blur-md border-b border-[var(--border)]">
-            <div class="container-custom">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <div>
-                        <h1 class="logo-title">DASHBOARD SALDO KAPTEN</h1>
-                        <p class="text-[var(--text-muted)] text-sm flex items-center gap-2 mt-1">
-                            <span id="status-dot" class="w-2 h-2 rounded-full bg-[var(--success)]"></span>
-                            <span id="status-text">Live • Updated: -</span>
-                        </p>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-2 items-center w-full md:w-auto">
-                        
-                        <!-- Added Attention Button -->
-                        <button id="attentionBtn" class="attention-btn disabled" onclick="showCriticalList()">
-                            <i data-lucide="alert-triangle" class="w-5 h-5"></i>
-                            <span class="hidden sm:inline">Attention Needed</span>
-                            <span id="attentionCount" class="attention-badge hidden">0</span>
-                        </button>
-    
-                        <div class="relative flex-grow md:flex-grow-0">
-                            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] w-4 h-4"></i>
-                            <!-- Debounced search input for better performance -->
-                            <input type="text" id="searchInput" placeholder="Cari..." class="glass-input pl-9 w-full md:w-48">
-                        </div>
-    
-                        <select id="typeFilter" class="glass-select cursor-pointer">
-                            <option value="ALL"> Semua Rekening</option>
-                            <option value="WD"> BANK WD</option>
-                            <option value="KAS"> BANK KAS</option>
-                        </select>
-    
-                        <select id="categoryFilter" class="glass-select cursor-pointer">
-                            <option value="ALL">✓ Semua Kategori</option>
-                            <option value="BERSIH">✓ Bersih Saja</option>
-                            <option value="KOTOR">✗ Kotor Saja</option>
-                        </select>
-    
-                        <select id="statusFilter" class="glass-select cursor-pointer">
-                            <option value="ALL">Semua Status</option>
-                            <option value="ON">Hanya ON</option>
-                            <option value="OFF">Hanya OFF</option>
-                        </select>
-    
-                        <button onclick="fetchData()" class="btn-custom p-2 w-10 h-10 flex items-center justify-center">
-                            <i data-lucide="refresh-cw" class="w-4 h-4" id="refreshIcon"></i>
-                        </button>
-    
-                    </div>
-                </div>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KAPTEN DASHBOARD — Command Center</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --void: #04060a;
+            --deep: #080c12;
+            --surface: #0c1118;
+            --panel: #101620;
+            --lift: #141c26;
+            --rim: rgba(255, 200, 60, 0.12);
+            --rim-strong: rgba(255, 200, 60, 0.3);
+            --gold: #f5c518;
+            --gold-dim: #c49a14;
+            --amber: #ff8c00;
+            --cyan: #00d4ff;
+            --emerald: #00e87a;
+            --crimson: #ff2d55;
+            --warning: #ff6b35;
+            --silver: #8fa0b8;
+            --text-primary: #e8edf5;
+            --text-secondary: #6b7d94;
+            --text-dim: #3d4d60;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--void);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── BACKGROUND GRID ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(245,197,24,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(245,197,24,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: 20%;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(ellipse, rgba(245,197,24,0.04) 0%, transparent 65%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── TYPOGRAPHY ── */
+        .font-orbitron { font-family: 'Orbitron', monospace; }
+        .font-rajdhani { font-family: 'Rajdhani', sans-serif; }
+        .font-mono-dm { font-family: 'DM Mono', monospace; }
+
+        /* ── HEADER ── */
+        .hdr {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(4,6,10,0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--rim);
+            padding: 0 32px;
+        }
+
+        .hdr-inner {
+            max-width: 1800px;
+            margin: 0 auto;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--gold), var(--amber));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 24px rgba(245,197,24,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .brand-icon::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+        }
+
+        .brand-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .brand-sub {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            margin-top: 2px;
+        }
+
+        .status-live {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .dot-live {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--emerald);
+            box-shadow: 0 0 8px var(--emerald);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--emerald); }
+            50% { opacity: 0.5; box-shadow: 0 0 3px var(--emerald); }
+        }
+
+        /* ── HEADER CONTROLS ── */
+        .ctrl-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ctrl-search {
+            position: relative;
+        }
+
+        .ctrl-search svg {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: var(--text-secondary);
+        }
+
+        .inp {
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            padding: 9px 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .inp:focus {
+            border-color: rgba(245,197,24,0.4);
+            box-shadow: 0 0 0 3px rgba(245,197,24,0.06);
+        }
+
+        .inp-search {
+            padding-left: 36px;
+            width: 180px;
+        }
+
+        .sel {
+            background: var(--panel);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 9px 32px 9px 14px;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23f5c518' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            transition: border-color 0.2s;
+        }
+
+        .sel:focus, .sel:hover {
+            border-color: rgba(245,197,24,0.35);
+        }
+
+        .sel option {
+            background: #0c1118;
+            color: var(--text-primary);
+        }
+
+        .btn-refresh {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--gold), var(--amber));
+            border: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #000;
+            box-shadow: 0 0 16px rgba(245,197,24,0.25);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+
+        .btn-refresh:hover {
+            box-shadow: 0 0 28px rgba(245,197,24,0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-alert {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,45,85,0.08);
+            border: 1px solid rgba(255,45,85,0.25);
+            border-radius: 8px;
+            color: var(--crimson);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-alert:hover { background: rgba(255,45,85,0.15); }
+        .btn-alert.disabled { opacity: 0.35; cursor: not-allowed; filter: grayscale(1); }
+
+        .badge-alert {
+            position: absolute;
+            top: -7px;
+            right: -7px;
+            background: var(--crimson);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        /* ── MAIN ── */
+        .main {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 28px 32px 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ── STAT CARDS ── */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--panel);
+            border: 1px solid var(--rim);
+            border-radius: 14px;
+            padding: 22px 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0.5;
+        }
+
+        .stat-card.danger {
+            border-color: rgba(255,45,85,0.25);
+            background: rgba(255,45,85,0.04);
+        }
+
+        .stat-card.danger::before {
+            background: linear-gradient(90deg, transparent, var(--crimson), transparent);
+        }
+
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--text-secondary);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stat-value.crimson {
+            background: linear-gradient(135deg, var(--crimson), #ff6b8a);
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        .stat-note {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+        }
+
+        /* ── SUMMARY PANEL ── */
+        .summary-panel {
+            background: var(--panel);
+            border: 1px solid var(--rim);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            padding: 18px 24px;
+            border-bottom: 1px solid var(--rim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(90deg, rgba(245,197,24,0.04) 0%, transparent 60%);
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .panel-body { padding: 20px 24px; }
+
+        /* ── SUMMARY METRICS ── */
+        .summary-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        @media(max-width: 640px) { .summary-metrics { grid-template-columns: 1fr; } }
+
+        .metric-box {
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 16px 18px;
+        }
+
+        .metric-box.gold { border-color: rgba(245,197,24,0.2); }
+        .metric-box.amber { border-color: rgba(255,140,0,0.2); }
+        .metric-box.emerald { border-color: rgba(0,232,122,0.2); }
+
+        .metric-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .metric-value.gold { color: var(--gold); }
+        .metric-value.amber { color: var(--amber); }
+        .metric-value.emerald { color: var(--emerald); }
+
+        /* ── COPY BUTTONS ── */
+        .copy-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        @media(max-width: 640px) { .copy-row { grid-template-columns: 1fr; } }
+
+        .copy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .copy-btn.gold {
+            color: var(--gold);
+            background: rgba(245,197,24,0.06);
+            border-color: rgba(245,197,24,0.25);
+        }
+
+        .copy-btn.gold:hover { background: rgba(245,197,24,0.14); }
+
+        .copy-btn.amber {
+            color: var(--amber);
+            background: rgba(255,140,0,0.06);
+            border-color: rgba(255,140,0,0.25);
+        }
+
+        .copy-btn.amber:hover { background: rgba(255,140,0,0.14); }
+
+        .copy-btn.emerald {
+            color: var(--emerald);
+            background: rgba(0,232,122,0.06);
+            border-color: rgba(0,232,122,0.25);
+        }
+
+        .copy-btn.emerald:hover { background: rgba(0,232,122,0.14); }
+
+        /* ── TABLE PANELS ── */
+        .table-panel {
+            background: var(--panel);
+            border: 1px solid var(--rim);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .table-panel-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--rim);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(90deg, rgba(245,197,24,0.04) 0%, transparent 50%);
+        }
+
+        .table-panel-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .table-panel-title.kas { color: var(--amber); }
+
+        .count-pill {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--rim-strong);
+            color: var(--gold);
+            letter-spacing: 0.5px;
+        }
+
+        .count-pill.kas {
+            border-color: rgba(255,140,0,0.35);
+            color: var(--amber);
+        }
+
+        /* ── TABLE ── */
+        .tbl-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: var(--deep);
+        }
+
+        th {
+            padding: 12px 18px;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--rim);
+            white-space: nowrap;
+        }
+
+        th:first-child { text-align: left; }
+        th:not(:first-child) { text-align: right; }
+        th.center { text-align: center; }
+
+        td {
+            padding: 14px 18px;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr.row-danger { background: rgba(255,45,85,0.05); border-left: 3px solid var(--crimson); }
+        tr.row-warning { background: rgba(255,107,53,0.05); border-left: 3px solid var(--warning); }
+        tr.row-off { opacity: 0.45; }
+        tr.row-normal:hover td { background: rgba(255,255,255,0.015); }
+
+        .cell-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: 0.3px;
+        }
+
+        .cell-name.danger { color: var(--crimson); }
+        .cell-name.warning { color: var(--warning); }
+
+        .cell-account {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            letter-spacing: 0.5px;
+        }
+
+        .cell-max {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text-dim);
+            margin-top: 3px;
+        }
+
+        .cell-balance {
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: right;
+            color: var(--gold);
+        }
+
+        .cell-balance.kas { color: var(--amber); }
+        .cell-balance.danger { color: var(--crimson); }
+        .cell-balance.warning { color: var(--warning); }
+
+        .cell-fee {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        .cell-center { text-align: center; }
+
+        /* ── BADGES ── */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .badge.on {
+            background: rgba(0,232,122,0.1);
+            color: var(--emerald);
+            border: 1px solid rgba(0,232,122,0.25);
+        }
+
+        .badge.off {
+            background: rgba(255,45,85,0.1);
+            color: var(--crimson);
+            border: 1px solid rgba(255,45,85,0.2);
+        }
+
+        .badge.bersih {
+            background: rgba(0,232,122,0.08);
+            color: #00b85e;
+            border: 1px solid rgba(0,232,122,0.18);
+        }
+
+        .badge.kotor {
+            background: rgba(255,45,85,0.08);
+            color: #cc2244;
+            border: 1px solid rgba(255,45,85,0.18);
+        }
+
+        .badge-row { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+
+        /* ── ACTION BUTTONS ── */
+        .act-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: transparent;
+        }
+
+        .act-btn svg { width: 13px; height: 13px; }
+
+        .act-btn.transfer {
+            color: var(--crimson);
+            border-color: rgba(255,45,85,0.2);
+        }
+        .act-btn.transfer:hover { background: rgba(255,45,85,0.15); border-color: rgba(255,45,85,0.4); }
+
+        .act-btn.transfer.warning-style {
+            color: var(--warning);
+            border-color: rgba(255,107,53,0.2);
+        }
+        .act-btn.transfer.warning-style:hover { background: rgba(255,107,53,0.15); }
+
+        .act-btn.edit {
+            color: var(--amber);
+            border-color: rgba(255,140,0,0.15);
+        }
+        .act-btn.edit:hover { background: rgba(255,140,0,0.12); border-color: rgba(255,140,0,0.35); }
+
+        /* ── MODALS ── */
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-bg.open { display: flex; }
+
+        .modal {
+            background: var(--panel);
+            border-radius: 18px;
+            padding: 30px;
+            max-width: 560px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modal-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+
+        @keyframes modal-in {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .modal.danger-border { border: 1px solid rgba(255,45,85,0.4); box-shadow: 0 0 60px rgba(255,45,85,0.15); }
+        .modal.success-border { border: 1px solid rgba(0,232,122,0.35); box-shadow: 0 0 60px rgba(0,232,122,0.1); }
+        .modal.gold-border { border: 1px solid rgba(245,197,24,0.35); box-shadow: 0 0 60px rgba(245,197,24,0.08); }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            padding-bottom: 18px;
+        }
+
+        .modal-header.danger { border-bottom: 1px solid rgba(255,45,85,0.2); }
+        .modal-header.success { border-bottom: 1px solid rgba(0,232,122,0.2); }
+        .modal-header.gold { border-bottom: 1px solid rgba(245,197,24,0.2); }
+
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-title.danger { color: var(--crimson); }
+        .modal-title.success { color: var(--emerald); }
+        .modal-title.gold { color: var(--gold); }
+
+        .modal-close {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid rgba(255,255,255,0.08);
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.07); color: var(--text-primary); }
+
+        /* ── FORM ELEMENTS ── */
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            display: block;
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 7px;
+        }
+
+        .form-inp {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            padding: 10px 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-inp:focus {
+            border-color: rgba(245,197,24,0.35);
+            box-shadow: 0 0 0 3px rgba(245,197,24,0.05);
+        }
+
+        .form-inp[readonly] {
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .form-inp.pin-display {
+            color: var(--gold);
+            font-weight: 500;
+            letter-spacing: 2px;
+        }
+
+        .form-select {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 32px 10px 14px;
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23f5c518' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+        .form-select option { background: #0c1118; }
+
+        /* ── INPUT GROUP ── */
+        .inp-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            padding: 8px 10px 8px 14px;
+            margin-bottom: 8px;
+        }
+
+        .inp-group input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+        }
+
+        .inp-group-copy {
+            background: rgba(0,232,122,0.1);
+            border: 1px solid rgba(0,232,122,0.2);
+            color: var(--emerald);
+            padding: 4px 9px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            font-family: 'DM Mono', monospace;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            transition: all 0.15s;
+        }
+
+        .inp-group-copy:hover { background: rgba(0,232,122,0.18); }
+
+        /* ── SUMMARY BOX ── */
+        .summary-box {
+            background: var(--surface);
+            border: 1px solid rgba(0,232,122,0.18);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin: 14px 0;
+        }
+
+        .summary-box-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .summary-box-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: var(--emerald);
+        }
+
+        /* ── SUGGEST BOX ── */
+        .suggest-box {
+            background: rgba(245,197,24,0.06);
+            border: 1px solid rgba(245,197,24,0.25);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin: 14px 0;
+        }
+
+        .suggest-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .suggest-amount {
+            font-family: 'DM Mono', monospace;
+            font-size: 15px;
+            color: var(--gold);
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .suggest-use-btn {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── EXCEED BOX ── */
+        .exceed-box {
+            background: rgba(255,45,85,0.08);
+            border: 1px solid rgba(255,45,85,0.25);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin: 14px 0;
+        }
+
+        .exceed-title {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--crimson);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .exceed-text {
+            font-family: 'DM Mono', monospace;
+            font-size: 12px;
+            color: rgba(255,45,85,0.75);
+        }
+
+        /* ── MODAL BUTTONS ── */
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px;
+            border-radius: 8px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .btn.outline {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-secondary);
+        }
+
+        .btn.outline:hover { background: rgba(255,255,255,0.05); }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--gold), var(--amber));
+            color: #000;
+        }
+
+        .btn.primary:hover { box-shadow: 0 0 20px rgba(245,197,24,0.3); }
+
+        .btn.danger {
+            background: var(--crimson);
+            color: #fff;
+        }
+
+        .btn.danger:hover { box-shadow: 0 0 20px rgba(255,45,85,0.35); }
+
+        .btn.success {
+            background: var(--emerald);
+            color: #000;
+        }
+
+        .btn.success:hover { box-shadow: 0 0 20px rgba(0,232,122,0.3); }
+
+        /* ── CRITICAL LIST ── */
+        .critical-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: rgba(255,45,85,0.07);
+            border: 1px solid rgba(255,45,85,0.18);
+            border-left: 3px solid var(--crimson);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .critical-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--crimson);
+        }
+
+        .critical-account {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .critical-amount {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--crimson);
+        }
+
+        /* ── TRANSFER MENU ITEMS ── */
+        .transfer-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 16px;
+            background: var(--surface);
+            border: 1px solid rgba(0,232,122,0.12);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .transfer-item:hover {
+            border-color: rgba(0,232,122,0.3);
+            background: rgba(0,232,122,0.05);
+        }
+
+        .transfer-item-name {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .transfer-item-account {
+            font-family: 'DM Mono', monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .transfer-item-balance {
+            font-family: 'DM Mono', monospace;
+            font-size: 14px;
+            color: var(--emerald);
+        }
+
+        /* ── EMPTY STATE ── */
+        .empty-warn {
+            text-align: center;
+            padding: 48px 24px;
+        }
+
+        .empty-warn .icon-wrap {
+            width: 64px;
+            height: 64px;
+            background: rgba(255,45,85,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+
+        /* ── ANIMATIONS ── */
+        .animate-spin { animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── SCROLL ── */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(245,197,24,0.15); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(245,197,24,0.3); }
+
+        /* ── DIVIDER ── */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--rim-strong), transparent);
+            margin: 8px 0;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media(max-width: 768px) {
+            .hdr { padding: 0 16px; }
+            .main { padding: 20px 16px 60px; }
+            .hdr-inner { height: auto; padding: 14px 0; flex-wrap: wrap; }
+            .brand-title { font-size: 15px; }
+            .ctrl-row { width: 100%; }
+            .inp-search { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header class="hdr">
+    <div class="hdr-inner">
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">
+                <i data-lucide="shield" style="width:20px;height:20px;color:#000;position:relative;z-index:1;"></i>
             </div>
-        </header>
-    
-        <div class="container-custom mt-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div class="card-custom col-span-1 sm:col-span-2 lg:col-span-1">
-                    <div class="card-title">Total Saldo Aktif</div>
-                    <div class="card-value" id="totalSaldo">Rp 0</div>
-                </div>
-    
-                <div id="cardNegative" class="card-custom border-[var(--danger)] bg-[rgba(255,68,68,0.05)] hidden">
-                    <div class="card-title text-[var(--danger)] flex items-center gap-2">
-                        <i data-lucide="trending-down" class="w-4 h-4"></i> Saldo Minus
-                    </div>
-                    <div class="card-value text-[var(--danger)]" style="-webkit-text-fill-color: var(--danger);" id="countNegative">0</div>
-                    <div class="text-xs text-[var(--danger)] opacity-80">Rekening Perlu Perhatian!</div>
-                </div>
-    
-                <div id="cardLow" class="card-custom border-[var(--danger)]" style="display:none; background: rgba(255,68,68,0.02);">
-                    <div class="card-title text-[var(--danger)] flex items-center gap-2">
-                        <i data-lucide="alert-triangle" class="w-4 h-4"></i> Saldo Mau Habis
-                    </div>
-                    <div class="card-value text-[var(--danger)]" style="-webkit-text-fill-color: var(--danger);" id="countLow">0</div>
-                    <div class="text-xs">WD ≤ Rp 2.000.000</div>
-                </div>
-    
-                <div class="card-custom">
-                    <div class="card-title">Rekening Aktif</div>
-                    <div class="card-value" id="countActive">0</div>
-                    <div class="text-xs">Status ON</div>
-                </div>
-            </div>
-    
-            <div class="grid grid-cols-1 gap-6">
-                <!-- Biaya Summary Card -->
-                <div class="bg-gradient-to-br from-[rgba(255,255,255,0.03)] to-[rgba(255,255,255,0.01)] border border-[rgba(255,215,0,0.1)] rounded-2xl overflow-hidden shadow-lg">
-                    <div class="p-6 border-b border-[rgba(255,215,0,0.1)] bg-gradient-to-r from-[rgba(255,215,0,0.05)] to-transparent">
-                        <h2 class="table-title flex items-center gap-3 text-lg">
-                            <i data-lucide="file-text" class="text-[var(--gold)] w-6 h-6"></i> RINGKASAN BIAYA
-                        </h2>
-                    </div>
-                    <div class="p-5">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <!-- Total Biaya WD -->
-                            <div class="bg-[rgba(255,215,0,0.05)] border border-[rgba(255,215,0,0.2)] rounded-lg p-4">
-                                <div class="text-xs font-bold text-[var(--text-muted)] uppercase mb-2">Total Biaya WD</div>
-                                <div class="text-xl font-bold text-[var(--gold)] font-mono" id="totalBiayaWD">0</div>
-                            </div>
-    
-                            <!-- Total Biaya KAS -->
-                            <div class="bg-[rgba(255,165,0,0.05)] border border-[rgba(255,165,0,0.2)] rounded-lg p-4">
-                                <div class="text-xs font-bold text-[var(--text-muted)] uppercase mb-2">Total Biaya KAS</div>
-                                <div class="text-xl font-bold text-[var(--accent)] font-mono" id="totalBiayaKAS">0</div>
-                            </div>
-    
-                            <!-- Total Keseluruhan -->
-                            <div class="bg-[rgba(34,204,136,0.05)] border border-[rgba(34,204,136,0.2)] rounded-lg p-4">
-                                <div class="text-xs font-bold text-[var(--text-muted)] uppercase mb-2">Total Keseluruhan</div>
-                                <div class="text-xl font-bold text-[var(--success)] font-mono" id="totalBiayaAll">0</div>
-                            </div>
-                        </div>
-    
-                        <!-- Copy Buttons -->
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <button onclick="copyBiayaFormatWD()" class="py-2 px-4 bg-[rgba(255,215,0,0.1)] border border-[rgba(255,215,0,0.3)] text-[var(--gold)] rounded hover:bg-[rgba(255,215,0,0.2)] transition flex items-center justify-center gap-2">
-                                <i data-lucide="copy" class="w-4 h-4"></i>
-                                <span class="text-sm font-bold">Copy WD</span>
-                            </button>
-                            <button onclick="copyBiayaFormatKAS()" class="py-2 px-4 bg-[rgba(255,165,0,0.1)] border border-[rgba(255,165,0,0.3)] text-[var(--accent)] rounded hover:bg-[rgba(255,165,0,0.2)] transition flex items-center justify-center gap-2">
-                                <i data-lucide="copy" class="w-4 h-4"></i>
-                                <span class="text-sm font-bold">Copy KAS</span>
-                            </button>
-                            <button onclick="copyBiayaFormatAll()" class="py-2 px-4 bg-[rgba(34,204,136,0.1)] border border-[rgba(34,204,136,0.3)] text-[var(--success)] rounded hover:bg-[rgba(34,204,136,0.2)] transition flex items-center justify-center gap-2">
-                                <i data-lucide="copy" class="w-4 h-4"></i>
-                                <span class="text-sm font-bold">Copy Semua</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            
-                <div id="wdTableCard" class="space-y-4 w-full">
-                    <div class="bg-[rgba(255,255,255,0.02)] border border-[var(--border)] rounded-xl overflow-hidden">
-                        <div class="p-5 border-b border-[var(--border)] flex justify-between items-center">
-                            <h2 class="table-title flex items-center gap-3 text-lg">
-                                <i data-lucide="credit-card" class="text-[var(--gold)] w-5 h-5"></i> REKENING WD
-                            </h2>
-                            <span class="pill" style="border-color: var(--gold); color: var(--gold); background: rgba(255,215,0,0.1);" id="wdCount">0 Items</span>
-                        </div>
-                        <div class="overflow-x-auto max-h-screen">
-                            <table class="w-full text-left border-collapse text-sm">
-                                <thead class="sticky top-0 bg-gradient-to-r from-[#13171e] to-[#0a0e14] z-10">
-                                    <tr>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,215,0,0.15)] text-[var(--gold)] text-xs uppercase font-bold font-mono">Nama Rekening</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,215,0,0.15)] text-[var(--gold)] text-xs uppercase font-bold text-right font-mono">Saldo</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,215,0,0.15)] text-[var(--gold)] text-xs uppercase font-bold text-right font-mono">Biaya</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,215,0,0.15)] text-[var(--gold)] text-xs uppercase font-bold text-center font-mono">Status</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,215,0,0.15)] text-[var(--gold)] text-xs uppercase font-bold text-center font-mono">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="wdTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-    
-                <div id="kasTableCard" class="space-y-4 w-full">
-                    <div class="bg-[rgba(255,255,255,0.02)] border border-[var(--border)] rounded-xl overflow-hidden">
-                        <div class="p-5 border-b border-[var(--border)] flex justify-between items-center">
-                            <h2 class="table-title flex items-center gap-3 text-lg">
-                                <i data-lucide="wallet" class="text-[var(--accent)] w-5 h-5"></i> REKENING KAS
-                            </h2>
-                            <span class="pill" style="border-color: var(--accent); color: var(--accent); background: rgba(255,165,0,0.1);" id="kasCount">0 Items</span>
-                        </div>
-                        <div class="overflow-x-auto max-h-screen">
-                            <table class="w-full text-left border-collapse text-sm">
-                                <thead class="sticky top-0 bg-gradient-to-r from-[#13171e] to-[#0a0e14] z-10">
-                                    <tr>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,165,0,0.15)] text-[var(--accent)] text-xs uppercase font-bold font-mono">Nama Rekening</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,165,0,0.15)] text-[var(--accent)] text-xs uppercase font-bold text-right font-mono">Saldo</th>
-                                        <th class="px-4 py-3 border-b border-[rgba(255,165,0,0.15)] text-[var(--accent)] text-xs uppercase font-bold text-center font-mono">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="kasTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <div class="brand-title">KAPTEN DASHBOARD</div>
+                <div class="brand-sub">COMMAND CENTER — FINANCIAL INTELLIGENCE</div>
             </div>
         </div>
-    
-        <!-- Modals -->
-        <div id="emptyBalanceModal" class="modal-overlay" style="z-index: 70;">
-            <div class="modal-content" style="border-color: var(--danger); text-align: center;">
-                <div class="w-20 h-20 rounded-full bg-[rgba(255,68,68,0.2)] flex items-center justify-center mx-auto mb-6" style="animation: pulse 2s infinite;">
-                    <i data-lucide="alert-triangle" class="text-[var(--danger)] w-10 h-10"></i>
-                </div>
-                <h2 class="text-2xl font-bold text-[var(--danger)] mb-2" style="font-family: 'Exo 2';">SALDO HABIS!</h2>
-                <p class="text-[var(--text-muted)] mb-8">Saldo untuk filter yang Anda pilih telah habis (Rp 0). Silakan ubah filter.</p>
-                <button onclick="closeModal('emptyBalanceModal')" class="w-full py-3 rounded-lg bg-[var(--danger)] text-black font-bold hover:opacity-90">TUTUP PERINGATAN</button>
+
+        <!-- Status -->
+        <div class="status-live" id="liveStatus" style="display:none;">
+            <span class="dot-live" id="statusDot"></span>
+            <span id="statusText">SYNCING...</span>
+        </div>
+
+        <!-- Controls -->
+        <div class="ctrl-row">
+            <!-- Attention -->
+            <button id="attentionBtn" class="btn-alert disabled" onclick="showCriticalList()">
+                <i data-lucide="alert-triangle" style="width:14px;height:14px;"></i>
+                <span>PERHATIAN</span>
+                <span id="attentionCount" class="badge-alert" style="display:none;">0</span>
+            </button>
+
+            <!-- Search -->
+            <div class="ctrl-search">
+                <i data-lucide="search"></i>
+                <input type="text" id="searchInput" placeholder="Cari rekening..." class="inp inp-search">
+            </div>
+
+            <!-- Filters -->
+            <select id="typeFilter" class="sel">
+                <option value="ALL">Semua Rekening</option>
+                <option value="WD">BANK WD</option>
+                <option value="KAS">BANK KAS</option>
+            </select>
+
+            <select id="categoryFilter" class="sel">
+                <option value="ALL">Semua Kategori</option>
+                <option value="BERSIH">Bersih Saja</option>
+                <option value="KOTOR">Kotor Saja</option>
+            </select>
+
+            <select id="statusFilter" class="sel">
+                <option value="ALL">Semua Status</option>
+                <option value="ON">Hanya ON</option>
+                <option value="OFF">Hanya OFF</option>
+            </select>
+
+            <!-- Refresh -->
+            <button class="btn-refresh" onclick="fetchData()">
+                <i data-lucide="refresh-cw" id="refreshIcon" style="width:15px;height:15px;"></i>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<div class="main">
+
+    <!-- STAT CARDS -->
+    <div class="stats-grid" style="margin-bottom:20px;">
+        <div class="stat-card">
+            <div class="stat-label">
+                <i data-lucide="trending-up" style="width:12px;height:12px;color:var(--gold);"></i>
+                Total Saldo Aktif
+            </div>
+            <div class="stat-value" id="totalSaldo">Rp 0</div>
+        </div>
+
+        <div class="stat-card danger" id="cardNegative" style="display:none;">
+            <div class="stat-label" style="color:var(--crimson);">
+                <i data-lucide="trending-down" style="width:12px;height:12px;"></i>
+                Saldo Minus
+            </div>
+            <div class="stat-value crimson" id="countNegative">0</div>
+            <div class="stat-note" style="color:rgba(255,45,85,0.6);">Rekening Perlu Perhatian</div>
+        </div>
+
+        <div class="stat-card danger" id="cardLow" style="display:none;">
+            <div class="stat-label" style="color:var(--crimson);">
+                <i data-lucide="alert-triangle" style="width:12px;height:12px;"></i>
+                Saldo Mau Habis
+            </div>
+            <div class="stat-value crimson" id="countLow">0</div>
+            <div class="stat-note" style="color:rgba(255,45,85,0.5);">WD ≤ Rp 2.000.000</div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-label">
+                <i data-lucide="activity" style="width:12px;height:12px;color:var(--emerald);"></i>
+                Rekening Aktif
+            </div>
+            <div class="stat-value" id="countActive">0</div>
+            <div class="stat-note">Status ON</div>
+        </div>
+    </div>
+
+    <!-- SUMMARY BIAYA -->
+    <div class="summary-panel">
+        <div class="panel-header">
+            <div class="panel-title">
+                <i data-lucide="file-text" style="width:15px;height:15px;"></i>
+                RINGKASAN BIAYA
             </div>
         </div>
-    
-        <div id="criticalModal" class="modal-overlay" style="z-index: 60;">
-            <div class="modal-content" style="border-color: var(--danger);">
-                <div class="flex justify-between items-center mb-6 border-b border-[var(--danger)] pb-4">
-                    <h3 class="text-2xl font-bold text-[var(--danger)] flex items-center gap-2">
-                        <i data-lucide="alert-triangle" class="w-7 h-7"></i> SALDO KRITIKAL
-                    </h3>
-                    <button onclick="closeModal('criticalModal')" class="text-[var(--danger)] hover:scale-110">
-                        <i data-lucide="x" class="w-6 h-6"></i>
+        <div class="panel-body">
+            <div class="summary-metrics">
+                <div class="metric-box gold">
+                    <div class="metric-label">Total Biaya WD</div>
+                    <div class="metric-value gold" id="totalBiayaWD">0</div>
+                </div>
+                <div class="metric-box amber">
+                    <div class="metric-label">Total Biaya KAS</div>
+                    <div class="metric-value amber" id="totalBiayaKAS">0</div>
+                </div>
+                <div class="metric-box emerald">
+                    <div class="metric-label">Total Keseluruhan</div>
+                    <div class="metric-value emerald" id="totalBiayaAll">0</div>
+                </div>
+            </div>
+            <div class="copy-row">
+                <button class="copy-btn gold" onclick="copyBiayaFormatWD()">
+                    <i data-lucide="copy" style="width:13px;height:13px;"></i> COPY WD
+                </button>
+                <button class="copy-btn amber" onclick="copyBiayaFormatKAS()">
+                    <i data-lucide="copy" style="width:13px;height:13px;"></i> COPY KAS
+                </button>
+                <button class="copy-btn emerald" onclick="copyBiayaFormatAll()">
+                    <i data-lucide="copy" style="width:13px;height:13px;"></i> COPY SEMUA
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABEL WD -->
+    <div class="table-panel" id="wdTableCard">
+        <div class="table-panel-header">
+            <div class="table-panel-title">
+                <i data-lucide="credit-card" style="width:14px;height:14px;"></i>
+                REKENING WD
+            </div>
+            <span class="count-pill" id="wdCount">0 Rekening</span>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">Nama Rekening</th>
+                        <th>Saldo</th>
+                        <th>Biaya</th>
+                        <th class="center">Status</th>
+                        <th class="center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="wdTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- TABEL KAS -->
+    <div class="table-panel" id="kasTableCard">
+        <div class="table-panel-header">
+            <div class="table-panel-title kas">
+                <i data-lucide="wallet" style="width:14px;height:14px;"></i>
+                REKENING KAS
+            </div>
+            <span class="count-pill kas" id="kasCount">0 Rekening</span>
+        </div>
+        <div class="tbl-wrap">
+            <table>
+                <thead>
+                    <tr style="border-bottom-color:rgba(255,140,0,0.15);">
+                        <th style="text-align:left;color:var(--amber);">Nama Rekening</th>
+                        <th style="color:var(--amber);">Saldo</th>
+                        <th class="center" style="color:var(--amber);">Status</th>
+                        <th class="center" style="color:var(--amber);">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="kasTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- Saldo Habis -->
+<div id="emptyBalanceModal" class="modal-bg" style="z-index:300;">
+    <div class="modal danger-border">
+        <div class="empty-warn">
+            <div class="icon-wrap">
+                <i data-lucide="alert-triangle" style="width:28px;height:28px;color:var(--crimson);"></i>
+            </div>
+            <div style="font-family:'Orbitron',monospace;font-size:16px;font-weight:700;color:var(--crimson);letter-spacing:2px;margin-bottom:8px;">SALDO HABIS</div>
+            <div style="font-family:'DM Mono',monospace;font-size:12px;color:var(--text-secondary);margin-bottom:24px;line-height:1.6;">Saldo untuk filter yang Anda pilih telah habis (Rp 0).<br>Silakan ubah filter.</div>
+            <button class="btn danger" onclick="closeModal('emptyBalanceModal')">TUTUP PERINGATAN</button>
+        </div>
+    </div>
+</div>
+
+<!-- Kritikal -->
+<div id="criticalModal" class="modal-bg" style="z-index:250;">
+    <div class="modal danger-border" style="max-width:580px;">
+        <div class="modal-header danger">
+            <div class="modal-title danger">
+                <i data-lucide="alert-triangle" style="width:18px;height:18px;"></i>
+                SALDO KRITIKAL
+            </div>
+            <button class="modal-close" onclick="closeModal('criticalModal')">
+                <i data-lucide="x" style="width:14px;height:14px;"></i>
+            </button>
+        </div>
+        <div id="criticalList" style="max-height:400px;overflow-y:auto;"></div>
+        <div class="btn-row">
+            <button class="btn danger" onclick="closeModal('criticalModal')">SAYA MENGERTI</button>
+        </div>
+    </div>
+</div>
+
+<!-- Pilih KAS -->
+<div id="transferMenuModal" class="modal-bg" style="z-index:220;">
+    <div class="modal success-border" style="max-width:560px;">
+        <div class="modal-header success">
+            <div class="modal-title success" id="transferMenuTitle">
+                <i data-lucide="arrow-right-left" style="width:16px;height:16px;"></i>
+                PILIH REKENING KAS
+            </div>
+            <button class="modal-close" onclick="closeModal('transferMenuModal')">
+                <i data-lucide="x" style="width:14px;height:14px;"></i>
+            </button>
+        </div>
+        <div id="transferMenuList" style="max-height:480px;overflow-y:auto;"></div>
+    </div>
+</div>
+
+<!-- Form Transfer -->
+<div id="transferFormModal" class="modal-bg" style="z-index:240;">
+    <div class="modal success-border">
+        <div class="modal-header success">
+            <div class="modal-title success">
+                <i data-lucide="send" style="width:16px;height:16px;"></i>
+                PENGIRIMAN DANA
+            </div>
+            <button class="modal-close" onclick="closeModal('transferFormModal')">
+                <i data-lucide="x" style="width:14px;height:14px;"></i>
+            </button>
+        </div>
+
+        <form onsubmit="handleTransferSubmit(event)">
+            <div class="form-group">
+                <label class="form-label">Dari Rekening KAS</label>
+                <input type="text" id="transferFromName" readonly class="form-inp">
+            </div>
+
+            <div class="section-divider"></div>
+
+            <div class="form-group" style="margin-top:14px;">
+                <label class="form-label">Ke Rekening WD</label>
+                <div class="inp-group">
+                    <input type="text" id="transferToName" readonly placeholder="Nama Rekening WD">
+                    <button type="button" class="inp-group-copy" onclick="copyToClipboard('transferToName')">
+                        <i data-lucide="copy" style="width:10px;height:10px;"></i> COPY
                     </button>
                 </div>
-                <div id="criticalList" class="max-h-[400px] overflow-y-auto space-y-3 pr-2"></div>
-                <div class="mt-6 text-center">
-                    <button onclick="closeModal('criticalModal')" class="px-8 py-3 rounded bg-[var(--danger)] text-black font-bold hover:opacity-90">SAYA MENGERTI</button>
-                </div>
-            </div>
-        </div>
-    
-        <div id="transferMenuModal" class="modal-overlay" style="z-index: 50;">
-            <div class="modal-content" style="border-color: var(--success);">
-                <div class="flex justify-between items-center mb-6 border-b border-[var(--success)] pb-4">
-                    <h3 class="text-xl font-bold text-[var(--success)] flex items-center gap-2">
-                        <i data-lucide="arrow-right-left" class="w-6 h-6"></i> PILIH REKENING KAS
-                    </h3>
-                    <button onclick="closeModal('transferMenuModal')" class="text-[var(--text-muted)] hover:text-[var(--success)]">
-                        <i data-lucide="x" class="w-6 h-6"></i>
+                <div class="inp-group">
+                    <input type="text" id="transferToAccount" readonly placeholder="No. Rekening WD">
+                    <button type="button" class="inp-group-copy" onclick="copyToClipboard('transferToAccount')">
+                        <i data-lucide="copy" style="width:10px;height:10px;"></i> COPY
                     </button>
                 </div>
-                <div id="transferMenuList" class="max-h-[500px] overflow-y-auto space-y-3 pr-2"></div>
             </div>
-        </div>
-    
-        <div id="transferFormModal" class="modal-overlay" style="z-index: 55;">
-            <div class="modal-content" style="border-color: var(--success);">
-                <div class="flex justify-between items-center mb-6 border-b border-[var(--success)] pb-4">
-                    <h3 class="text-xl font-bold text-[var(--success)] flex items-center gap-2">
-                        <i data-lucide="send" class="w-6 h-6"></i> PENGIRIMAN DANA
-                    </h3>
-                    <button onclick="closeModal('transferFormModal')" class="text-[var(--text-muted)]">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
-                <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-2">Dari Rekening KAS</label>
-                        <input type="text" id="transferFromName" readonly class="w-full bg-[rgba(255,255,255,0.05)] border border-[var(--border)] rounded p-2 text-[var(--text-muted)] cursor-not-allowed">
-                    </div>
-    
-                    <div class="border-t border-[var(--border)] pt-4">
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-2">Ke Rekening WD</label>
-                        <div class="input-group mb-3">
-                            <input type="text" id="transferToName" readonly placeholder="Nama Rekening WD">
-                            <button type="button" onclick="copyToClipboard('transferToName')" title="Copy">
-                                <i data-lucide="copy" style="width: 12px; height: 12px; display: inline;"></i> Copy
-                            </button>
-                        </div>
-                        <div class="input-group">
-                            <input type="text" id="transferToAccount" readonly placeholder="No. Rekening WD">
-                            <button type="button" onclick="copyToClipboard('transferToAccount')" title="Copy">
-                                <i data-lucide="copy" style="width: 12px; height: 12px; display: inline;"></i> Copy
-                            </button>
-                        </div>
-                    </div>
-    
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-2">Nominal Pengiriman</label>
-                        <input type="number" id="transferNominal" placeholder="Rp 0" class="w-full glass-input" required oninput="validateTransferNominal()">
-                    </div>
 
-                    <div id="suggestMaxTransferBox" style="display:none;" class="mt-4 p-3 rounded bg-[rgba(255,215,0,0.1)] border border-[rgba(255,215,0,0.3)]">
-                        <p class="text-xs text-[var(--text-muted)] mb-2">💡 SARAN MAX TRANSFER:</p>
-                        <p class="text-sm font-bold text-[var(--gold)] font-mono" id="suggestMaxTransferAmount">-</p>
-                        <button type="button" onclick="setSuggestedMaxTransfer()" class="mt-2 px-3 py-1 bg-[var(--gold)] text-black rounded text-xs font-bold hover:opacity-90">GUNAKAN NILAI INI</button>
-                    </div>
-
-                    <div id="exceedMaxBox" style="display:none;" class="mt-4 p-3 rounded bg-[rgba(255,68,68,0.15)] border border-[rgba(255,68,68,0.3)]">
-                        <p class="text-xs font-bold text-[var(--danger)] mb-2">🚨 NOMINAL MELEBIHI MAX TAMPUNG!</p>
-                        <p class="text-sm text-[var(--danger)] font-mono" id="exceedMaxText">-</p>
-                    </div>
-                    
-                    <div class="mt-6 p-4 rounded bg-[rgba(34,204,136,0.1)] border border-[rgba(34,204,136,0.2)]">
-                        <p class="text-xs text-[var(--text-muted)] mb-2">RINGKASAN PENGIRIMAN:</p>
-                        <p class="text-sm font-bold text-[var(--success)] font-mono" id="transferSummary">-</p>
-                    </div>
-    
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-2">PIN KEAMANAN (6-10 DIGIT)</label>
-                        <input type="text" id="transferPIN" readonly placeholder="PIN akan ditampilkan otomatis" class="w-full bg-[rgba(255,255,255,0.05)] border border-[var(--border)] rounded p-2 text-[var(--success)] cursor-not-allowed font-mono font-bold">
-                    </div>
-                    
-                    <div class="pt-4 flex gap-3">
-                        <button type="button" onclick="closeModal('transferFormModal')" class="flex-1 py-2 rounded bg-transparent border border-[var(--border)] text-[var(--text-muted)] hover:bg-[rgba(255,255,255,0.05)]">Batal</button>
-                        <button type="submit" id="transferSubmitBtn" class="flex-1 py-2 rounded bg-[var(--success)] text-black font-bold hover:opacity-90">PROSES TRANSFER</button>
-                    </div>
-                </form>
+            <div class="form-group">
+                <label class="form-label">Nominal Pengiriman</label>
+                <input type="number" id="transferNominal" placeholder="0" class="form-inp" required oninput="validateTransferNominal()">
             </div>
-        </div>
-    
-        <div id="editModal" class="modal-overlay" style="z-index: 52;">
-            <div class="modal-content" style="border-color: var(--border);">
-                <div class="flex justify-between items-center mb-6 border-b border-[var(--border)] pb-4">
-                    <h3 class="text-xl font-bold text-[var(--gold)] flex items-center gap-2">
-                        <i data-lucide="edit-2" class="w-5 h-5"></i> EDIT REKENING
-                    </h3>
-                    <button onclick="closeModal('editModal')" class="text-[var(--text-muted)]">
-                        <i data-lucide="x" class="w-6 h-6"></i>
-                    </button>
-                </div>
-                <form id="editForm" onsubmit="handleSaveEdit(event)" class="space-y-4">
-                    <input type="hidden" id="editId">
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-1">Nama Rekening</label>
-                        <input type="text" id="editName" readonly class="w-full bg-[rgba(255,255,255,0.05)] border border-[var(--border)] rounded p-2 text-[var(--text-muted)] cursor-not-allowed">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-1">No. Rekening</label>
-                        <input type="text" id="editAccount" class="w-full glass-input">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-1">Saldo</label>
-                        <input type="number" id="editBalance" class="w-full glass-input">
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-1">Status</label>
-                        <select id="editStatus" class="w-full glass-select">
-                            <option value="ON">ON</option>
-                            <option value="OFF">OFF</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-bold text-[var(--text-muted)] uppercase block mb-1">PIN Keamanan (6-10 digit)</label>
-                        <input type="text" id="editPIN" placeholder="Masukkan PIN 6-10 digit" class="w-full glass-input">
-                    </div>
-                    <div class="pt-4 flex gap-3">
-                        <button type="button" onclick="closeModal('editModal')" class="flex-1 py-2 rounded bg-transparent border border-[var(--border)] text-[var(--text-muted)] hover:bg-[rgba(255,255,255,0.05)]">Batal</button>
-                        <button type="submit" class="flex-1 py-2 rounded bg-[var(--accent)] text-black font-bold hover:opacity-90">Simpan</button>
-                    </div>
-                </form>
+
+            <div id="suggestMaxTransferBox" style="display:none;" class="suggest-box">
+                <div class="suggest-label">💡 SARAN NOMINAL TRANSFER</div>
+                <div class="suggest-amount" id="suggestMaxTransferAmount">-</div>
+                <button type="button" onclick="setSuggestedMaxTransfer()" class="suggest-use-btn">GUNAKAN NILAI INI</button>
             </div>
+
+            <div id="exceedMaxBox" style="display:none;" class="exceed-box">
+                <div class="exceed-title">🚨 NOMINAL MELEBIHI MAX TAMPUNG</div>
+                <div class="exceed-text" id="exceedMaxText">-</div>
+            </div>
+
+            <div class="summary-box">
+                <div class="summary-box-label">Ringkasan Transfer</div>
+                <div class="summary-box-text" id="transferSummary">—</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">PIN Keamanan</label>
+                <input type="text" id="transferPIN" readonly class="form-inp pin-display" placeholder="PIN akan ditampilkan otomatis">
+            </div>
+
+            <div class="btn-row">
+                <button type="button" class="btn outline" onclick="closeModal('transferFormModal')">BATAL</button>
+                <button type="submit" class="btn success" id="transferSubmitBtn">PROSES TRANSFER</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Rekening -->
+<div id="editModal" class="modal-bg" style="z-index:230;">
+    <div class="modal gold-border">
+        <div class="modal-header gold">
+            <div class="modal-title gold">
+                <i data-lucide="edit-2" style="width:15px;height:15px;"></i>
+                EDIT REKENING
+            </div>
+            <button class="modal-close" onclick="closeModal('editModal')">
+                <i data-lucide="x" style="width:14px;height:14px;"></i>
+            </button>
         </div>
-    
-        <script>
-            const API_KEY = "AIzaSyDCHy6x2rebgFUgBmJWZmWXkhw1lupJStE";
-            const SPREADSHEET_ID = "1rkGN7U659qbpUfNA0pz-IsDvDLvgpOqm4XXoB8BmieI";
-            const SHEET_NAME = "Sheet2";
-            const RANGE = `${SHEET_NAME}!A1:F999`;
-            const SHEET_MAX_TAMPUNG = "G!A1:B999";
-    
-            let banks = [];
-            let maxTampungData = {}; // Store max tampung by account name
-            let filters = { type: 'ALL', category: 'ALL', status: 'ALL', search: '' };
-            let selectedTransferKas = null;
-            let selectedTransferWd = null;
-            let searchTimeout; // For debouncing
 
-            // 💾 LocalStorage untuk persist filter
-            function saveFilters() {
-                localStorage.setItem('dashboardFilters', JSON.stringify(filters));
+        <form id="editForm" onsubmit="handleSaveEdit(event)">
+            <input type="hidden" id="editId">
+            <div class="form-group">
+                <label class="form-label">Nama Rekening</label>
+                <input type="text" id="editName" readonly class="form-inp">
+            </div>
+            <div class="form-group">
+                <label class="form-label">No. Rekening</label>
+                <input type="text" id="editAccount" class="form-inp">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Saldo</label>
+                <input type="number" id="editBalance" class="form-inp">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <select id="editStatus" class="form-select">
+                    <option value="ON">ON — Aktif</option>
+                    <option value="OFF">OFF — Nonaktif</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">PIN Keamanan (6–10 digit)</label>
+                <input type="text" id="editPIN" placeholder="Masukkan PIN 6–10 digit" class="form-inp">
+            </div>
+            <div class="btn-row">
+                <button type="button" class="btn outline" onclick="closeModal('editModal')">BATAL</button>
+                <button type="submit" class="btn primary">SIMPAN PERUBAHAN</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══════════════════ SCRIPT ══════════════════ -->
+<script>
+    const API_KEY = "AIzaSyDCHy6x2rebgFUgBmJWZmWXkhw1lupJStE";
+    const SPREADSHEET_ID = "1rkGN7U659qbpUfNA0pz-IsDvDLvgpOqm4XXoB8BmieI";
+    const SHEET_NAME = "Sheet2";
+    const RANGE = `${SHEET_NAME}!A1:F999`;
+
+    let banks = [];
+    let maxTampungData = {};
+    let filters = { type: 'ALL', category: 'ALL', status: 'ALL', search: '' };
+    let selectedTransferKas = null;
+    let selectedTransferWd = null;
+    let searchTimeout;
+
+    const parseNumber = (v) => {
+        if (!v) return 0;
+        const s = String(v).trim();
+        const neg = s.includes('-');
+        const n = Number(s.replace(/[^0-9]/g, ''));
+        return isNaN(n) ? 0 : (neg ? -n : n);
+    };
+
+    const fmt = (n) => new Intl.NumberFormat('id-ID', {
+        style: 'currency', currency: 'IDR', maximumFractionDigits: 0
+    }).format(n).replace(/\./g, ',');
+
+    const fmtNum = (n) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(n).replace(/\./g, ',');
+
+    function saveFilters() { localStorage.setItem('dashboardFilters_v2', JSON.stringify(filters)); }
+    function loadFilters() {
+        const saved = localStorage.getItem('dashboardFilters_v2');
+        if (saved) {
+            try {
+                filters = JSON.parse(saved);
+                document.getElementById('typeFilter').value = filters.type || 'ALL';
+                document.getElementById('categoryFilter').value = filters.category || 'ALL';
+                document.getElementById('statusFilter').value = filters.status || 'ALL';
+            } catch(e) {}
+        }
+    }
+    function savePIN(id, pin) {
+        let pins = JSON.parse(localStorage.getItem('bankPINs') || '{}');
+        if (pin && pin.trim()) pins[id] = pin; else delete pins[id];
+        localStorage.setItem('bankPINs', JSON.stringify(pins));
+    }
+    function loadPIN(id) { return (JSON.parse(localStorage.getItem('bankPINs') || '{}'))[id] || ''; }
+    function restoreAllPINs() { banks.forEach(b => { const p = loadPIN(b.id); if (p) b.pin = p; }); }
+
+    async function fetchMaxTampung() {
+        try {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent('Sheet2!G:G')}?key=${API_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) return;
+            const json = await res.json();
+            const values = json.values || [];
+            let arr = [];
+            for (let i = 1; i < values.length; i++) {
+                if (values[i] && values[i][0]) {
+                    const text = String(values[i][0]).trim().toUpperCase();
+                    let amount = 0;
+                    const match = text.match(/MAX\s+(\d+)\s*(JT|JUTA)?/i);
+                    if (match) amount = parseInt(match[1]) * 1000000;
+                    arr.push(amount);
+                } else { arr.push(0); }
             }
-            
-            function loadFilters() {
-                const saved = localStorage.getItem('dashboardFilters');
-                if (saved) {
-                    try {
-                        filters = JSON.parse(saved);
-                        document.getElementById('typeFilter').value = filters.type || 'ALL';
-                        document.getElementById('categoryFilter').value = filters.category || 'ALL';
-                        document.getElementById('statusFilter').value = filters.status || 'ALL';
-                    } catch(e) { console.error('Error loading filters:', e); }
-                }
+            maxTampungData = arr;
+        } catch(e) {}
+    }
+
+    async function fetchData() {
+        const ic = document.getElementById('refreshIcon');
+        ic.classList.add('animate-spin');
+        const statusEl = document.getElementById('statusText');
+        const dotEl = document.getElementById('statusDot');
+        document.getElementById('liveStatus').style.display = 'flex';
+        statusEl.textContent = 'SYNCING...';
+        dotEl.style.background = 'var(--amber)';
+        dotEl.style.boxShadow = '0 0 8px var(--amber)';
+
+        try {
+            await fetchMaxTampung();
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(RANGE)}?key=${API_KEY}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error(res.status);
+            const json = await res.json();
+            const values = json.values || [];
+            const newBanks = [];
+
+            for (let i = 1; i < values.length; i++) {
+                const row = values[i];
+                if (!row || !row[0]) continue;
+                const nama = row[0].trim();
+                const isKas = nama.toUpperCase().includes('BANK KAS');
+                const isWd = nama.toUpperCase().includes('WD') && !isKas;
+                let type = isKas ? 'KAS' : (isWd ? 'WD' : 'OTHER');
+                const categoryValue = String(row[5] || '').trim().toUpperCase();
+                const cat = categoryValue === 'KOTOR' || categoryValue.includes('KOTOR') ? 'KOTOR' : 'BERSIH';
+                const rawStatus = row[3] ? String(row[3]).trim().toUpperCase() : '';
+                const status = rawStatus === 'ON' ? 'ON' : 'OFF';
+                const maxTampung = Array.isArray(maxTampungData) ? (maxTampungData[i - 1] || 0) : 0;
+                newBanks.push({
+                    id: `${i}-${nama}`,
+                    name: nama,
+                    accountNumber: (row[2] || '').trim(),
+                    balance: parseNumber(row[1]),
+                    type, category: cat,
+                    originalStatus: status,
+                    status,
+                    fee: parseNumber(row[4]),
+                    maxTampung
+                });
             }
 
-            // 💾 LocalStorage untuk persist PIN per rekening
-            function savePIN(bankId, pin) {
-                let pins = JSON.parse(localStorage.getItem('bankPINs') || '{}');
-                if (pin && pin.trim()) {
-                    pins[bankId] = pin;
-                } else {
-                    delete pins[bankId];
-                }
-                localStorage.setItem('bankPINs', JSON.stringify(pins));
-            }
-            
-            function loadPIN(bankId) {
-                const pins = JSON.parse(localStorage.getItem('bankPINs') || '{}');
-                return pins[bankId] || '';
-            }
-            
-            // Restore semua PIN ke banks array setelah fetchData
-            function restoreAllPINs() {
-                banks.forEach(b => {
-                    const savedPin = loadPIN(b.id);
-                    if (savedPin) b.pin = savedPin;
-                });
-            }
-    
-            const isStatusActive = (status) => {
-                return status && status.trim().toUpperCase() === 'ON';
-            };
-    
-            const parseNumber = (v) => { if(!v) return 0; const s = String(v).trim(); const neg = s.includes('-'); const n = Number(s.replace(/[^0-9]/g, '')); return isNaN(n) ? 0 : (neg ? -n : n); };
-            const fmt = (n) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(n).replace(/\./g, ',');
-            const fmtNum = (n) => new Intl.NumberFormat('id-ID', { maximumFractionDigits: 0 }).format(n).replace(/\./g, ',');
-    
-            const extractPersonName = (kasName) => {
-                const parts = kasName.split('/');
-                if (parts.length > 1) return parts[1].trim();
-                const match = kasName.match(/BANK KAS\s+(.+?)(?:\s+BCA|\s+BRI|$)/i);
-                return match ? match[1].trim() : kasName;
-            };
-    
-            function copyToClipboard(elementId) {
-                const element = document.getElementById(elementId);
-                const text = element.value;
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('✅ Berhasil dicopy ke clipboard: ' + text);
-                }).catch(() => {
-                    alert('Gagal copy, silakan copy manual');
-                });
-            }
-    
-            // Fetch max tampung dari Sheet2 kolom G (format: "MAX 20 JT", "MAX 50 JT", dll)
-            async function fetchMaxTampung() {
-                try {
-                    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent('Sheet2!G:G')}?key=${API_KEY}`;
-                    console.log('📡 Fetching max tampung dari Sheet2 kolom G...');
-                    const res = await fetch(url);
-                    if (!res.ok) {
-                        console.warn('⚠️ Response not ok:', res.status);
-                        return;
-                    }
-                    const json = await res.json();
-                    const values = json.values || [];
-                    
-                    console.log('📊 Raw values dari Sheet2 kolom G:', values);
-                    
-                    // Array untuk menyimpan max tampung by index
-                    let maxTampungByIndex = [];
-                    
-                    // Skip header (row 0) - mulai dari i=1
-                    for (let i = 1; i < values.length; i++) {
-                        if (values[i] && values[i][0]) {
-                            const text = String(values[i][0]).trim().toUpperCase();
-                            console.log(`Row ${i}: "${text}"`);
-                            
-                            // Parse "MAX 20 JT", "MAX 50 JUTA", "20 JT", "50", dll
-                            let amount = 0;
-                            
-                            // Try pattern: "MAX 20 JT" atau "MAX 20 JUTA"
-                            let match = text.match(/MAX\s+(\d+)\s*(JT|JUTA)?/i);
-                            if (match) {
-                                amount = parseInt(match[1]) * 1000000;
-                                console.log(`✅ Parsed MAX pattern: ${text} → ${amount.toLocaleString('id-ID')}`);
-                            } else {
-                                console.log(`❌ No MAX pattern found in: "${text}"`);
-                            }
-                            
-                            maxTampungByIndex.push(amount);
-                        } else {
-                            maxTampungByIndex.push(0);
-                        }
-                    }
-                    
-                    maxTampungData = maxTampungByIndex;
-                    console.log('✅ Max Tampung Data Final (Total rows):', maxTampungByIndex.length, maxTampungByIndex.slice(0, 10).map(v => v.toLocaleString('id-ID')));
-                } catch (err) {
-                    console.error("❌ Error fetching max tampung:", err);
-                }
-            }
-    
-            // Optimization: Use requestAnimationFrame for smoother UI updates
-            async function fetchData() {
-                const ic = document.getElementById('refreshIcon');
-                ic.classList.add('animate-spin');
-                document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse';
-                document.getElementById('status-text').textContent = 'Syncing...';
-    
-                try {
-                    await fetchMaxTampung(); // Fetch max tampung first
-                    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${encodeURIComponent(RANGE)}?key=${API_KEY}`;
-                    const res = await fetch(url);
-                    if (!res.ok) throw new Error(res.status);
-                    const json = await res.json();
-                    const values = json.values || [];
-                    const newBanks = [];
-    
-                    // Optimization: Pre-allocate array if possible or just push efficiently
-                    // Batch processing logic could be added here if dataset > 1000 rows
-                    
-                    for (let i = 1; i < values.length; i++) {
-                        const row = values[i];
-                        if (!row || !row[0]) continue;
-                        const nama = row[0].trim();
-                        const isKas = nama.toUpperCase().includes('BANK KAS');
-                        const isWd = nama.toUpperCase().includes('WD') && !isKas;
-                        let type = 'OTHER';
-                        
-                        const categoryValue = String(row[5] || '').trim().toUpperCase();
-                        let cat = 'BERSIH';
-                        
-                        if (categoryValue === 'KOTOR') {
-                            cat = 'KOTOR';
-                        } else if (categoryValue.includes('KOTOR')) {
-                            cat = 'KOTOR';
-                        } else {
-                            cat = 'BERSIH';
-                        }
-                        
-                        if (isKas) { type = 'KAS'; }
-                        else if (isWd) { type = 'WD'; }
-                        else { type = 'OTHER'; }
-                        
-                        const rawStatus = row[3] ? String(row[3]).trim() : '';
-                        const statusUpper = rawStatus.toUpperCase();
-                        const originalStatus = statusUpper === 'ON' ? 'ON' : (statusUpper === 'OFF' ? 'OFF' : 'OFF');
-                        
-                        // Get max tampung by index dari Sheet G (i dimulai dari 1 untuk row 1, maxTampungData[0] adalah untuk row 1)
-                        const maxTampung = Array.isArray(maxTampungData) ? (maxTampungData[i - 1] || 0) : 0;
-                        newBanks.push({
-                            id: `${i}-${nama}`,
-                            name: nama,
-                            accountNumber: (row[2] || '').trim(),
-                            balance: parseNumber(row[1]),
-                            type: type,
-                            category: cat,
-                            originalStatus: originalStatus,
-                            status: originalStatus === 'ON' ? 'ON' : 'OFF',
-                            fee: parseNumber(row[4]),
-                            maxTampung: maxTampung
-                        });
-                    }
-                    
-                    banks = newBanks;
-                    restoreAllPINs(); // Restore PIN dari localStorage
-                    
-                    // Use requestAnimationFrame to update UI without blocking main thread
-                    requestAnimationFrame(() => {
-                        updateUI();
-                        document.getElementById('status-dot').className = 'w-2 h-2 rounded-full bg-[var(--success)]';
-                        document.getElementById('status-text').textContent = `Live • Updated: ${new Date().toLocaleTimeString()}`;
-                        ic.classList.remove('animate-spin');
-                    });
-                    
-                } catch (err) {
-                    console.error(err);
-                    alert("Gagal mengambil data");
-                    ic.classList.remove('animate-spin');
-                }
-            }
-    
-            function updateUI() {
-                // Optimization: Cache DOM elements
-                const wdTableBody = document.getElementById('wdTableBody');
-                const kasTableBody = document.getElementById('kasTableBody');
-                
-                // Clear existing content first
-                wdTableBody.innerHTML = '';
-                kasTableBody.innerHTML = '';
-    
-                let filtered = banks.filter(b => {
-                    if (filters.search && !b.name.toLowerCase().includes(filters.search) && !b.accountNumber.includes(filters.search)) return false;
-                    if (filters.type === 'WD' && b.type !== 'WD') return false;
-                    if (filters.type === 'KAS' && b.type !== 'KAS') return false;
-                    if (filters.category !== 'ALL' && b.category !== filters.category) return false;
-                    if (filters.status !== 'ALL' && b.status !== filters.status) return false;
-                    return true;
-                }).sort((a, b) => {
-                    const aNeg = a.balance < 0, bNeg = b.balance < 0;
-                    if (aNeg && !bNeg) return -1; if (!aNeg && bNeg) return 1;
-                    const aLow = a.type === 'WD' && a.balance > 0 && a.balance < 2e6 && a.status === 'ON';
-                    const bLow = b.type === 'WD' && b.balance > 0 && b.balance < 2e6 && b.status === 'ON';
-                    if (aLow && !bLow) return -1; if (!aLow && bLow) return 1;
-                    if (a.status === 'ON' && b.status === 'OFF') return -1; if (a.status === 'OFF' && b.status === 'ON') return 1;
-                    return 0;
-                });
-                
-                const wd = filtered.filter(b => b.type === 'WD');
-                const kas = filtered.filter(b => b.type === 'KAS');
-    
-                // --- NEW: Sort KAS by Lowest Balance First ---
-                kas.sort((a, b) => a.balance - b.balance);
-                // --------------------------------------------
-                
-                // Calculate stats efficiently
-                let total = 0, neg = 0, low = 0, act = 0;
-                // Single pass for global stats
-                for(const b of banks) {
-                    if(b.status === 'ON') total += b.balance; // Wait, this total logic in original code filtered by 'filtered' or 'banks'? Original used 'filtered' for total but 'banks' for counts.
-                    // Checking original code: total used `filtered`, others used `banks`
-                    if(b.balance < 0) neg++;
-                    if(b.type === 'WD' && b.balance > 0 && b.balance < 2e6 && b.status === 'ON') low++;
-                    if(b.status === 'ON') act++;
-                }
-                
-                // Recalculate total based on filtered view to match original logic exactly if that was intended, 
-                // OR fix it to be consistent. Original: `const total = filtered.filter...`
-                // Let's stick to original logic: Total depends on VIEW, Counts depend on DATA
-                total = filtered.filter(b => b.status === 'ON').reduce((a, b) => a + b.balance, 0);
-                
-                // Update Attention Button Status
-                // Calculate criticals from ALL banks, not just filtered
-                const criticalCount = banks.filter(b => b.balance < 0 || (b.type === 'WD' && b.balance < 2e6 && b.balance > 0 && b.status === 'ON') || (b.balance > b.maxTampung)).length;
-                const attBtn = document.getElementById('attentionBtn');
-                const attCount = document.getElementById('attentionCount');
-                
-                if (criticalCount > 0) {
-                    attBtn.classList.remove('disabled');
-                    attCount.textContent = criticalCount;
-                    attCount.classList.remove('hidden');
-                    attBtn.classList.add('animate-pulse');
-                } else {
-                    attBtn.classList.add('disabled');
-                    attCount.classList.add('hidden');
-                    attBtn.classList.remove('animate-pulse');
-                }
-    
-                // Calculate total fees for WD and KAS
-                let totalFeeWD = 0, totalFeeKAS = 0;
-                for(const b of filtered) {
-                    if(b.type === 'WD') totalFeeWD += b.fee;
-                    // KAS doesn't have fees in current data structure, but we calculate anyway
-                }
-                // For KAS fees if they exist
-                for(const b of banks) {
-                    if(b.type === 'KAS' && b.fee) totalFeeKAS += b.fee;
-                }
-    
-                // Batch DOM updates
-                document.getElementById('totalSaldo').textContent = fmt(total);
-                document.getElementById('countNegative').textContent = neg;
-                document.getElementById('countLow').textContent = low;
-                document.getElementById('countActive').textContent = act;
-                document.getElementById('totalBiayaWD').textContent = fmtNum(totalFeeWD);
-                document.getElementById('totalBiayaKAS').textContent = fmtNum(totalFeeKAS);
-                document.getElementById('totalBiayaAll').textContent = fmtNum(totalFeeWD + totalFeeKAS);
-                
-                const cardNeg = document.getElementById('cardNegative');
-                if (neg === 0) cardNeg.classList.add('hidden'); else cardNeg.classList.remove('hidden');
-                
-                document.getElementById('cardLow').style.display = low > 0 ? 'block' : 'none';
-                document.getElementById('wdCount').textContent = `${wd.length} Items`;
-                document.getElementById('kasCount').textContent = `${kas.length} Items`;
-                document.getElementById('wdTableCard').style.display = filters.type === 'ALL' || filters.type === 'WD' ? 'block' : 'none';
-                document.getElementById('kasTableCard').style.display = filters.type === 'ALL' || filters.type === 'KAS' ? 'block' : 'none';
-                
-                // Render tables using DocumentFragment for performance
-                renderTableEfficiently(wdTableBody, wd, true);
-                renderTableEfficiently(kasTableBody, kas, false);
-                
-                lucide.createIcons();
-            }
-    
-            // Optimization: Use DocumentFragment
-            function renderTableEfficiently(tbody, data, isWd) {
-                const fragment = document.createDocumentFragment();
-                
-                data.forEach(b => {
-                    const isLow = b.balance < 2e6 && b.balance > 0 && b.status === 'ON' && isWd;
-                    const isNeg = b.balance < 0;
-                    const isOverMax = b.maxTampung > 0 && b.balance > b.maxTampung;
-                    const r = document.createElement('tr');
-                    
-                    // Pre-calculate classes to avoid string concat overhead in loop
-                    let rowClass = 'border-b border-dashed border-[rgba(255,215,0,0.1)]';
-                    if (b.status === 'OFF') rowClass += ' opacity-50 grayscale';
-                    if (isOverMax) rowClass += ' bg-[rgba(255,136,0,0.15)] border-l-4 border-l-[var(--warning)]';
-                    else if (isNeg || isLow) rowClass += ' bg-[rgba(255,68,68,0.1)] border-l-4 border-l-[var(--danger)]';
-                    r.className = rowClass;
-                    
-                    let nc, bc;
-                    if (isOverMax) {
-                        nc = 'text-[var(--warning)]';
-                        bc = 'text-[var(--warning)]';
-                    } else if (isNeg || isLow) {
-                        nc = 'text-[var(--danger)]';
-                        bc = 'text-[var(--danger)]';
-                    } else {
-                        nc = 'text-[var(--text)]';
-                        bc = b.type === 'WD' ? 'text-[var(--gold)]' : 'text-[var(--accent)]';
-                    }
-                    
-                    const catBadge = b.category === 'KOTOR' 
-                        ? '<span class="pill danger">KOTOR</span>' 
-                        : '<span class="pill success">BERSIH</span>';
-                    
-                    const statusBadge = b.status === 'ON'
-                        ? '<span class="pill success">ON</span>'
-                        : '<span class="pill danger">OFF</span>';
-                    
-                    let transferBtn = '';
-                    if (isOverMax) {
-                        const overAmount = b.balance - b.maxTampung;
-                        transferBtn = `<button onclick='startTransferFromWd("${b.id}")' class="p-2 hover:bg-[rgba(255,136,0,0.2)] text-[var(--warning)] rounded transition" title="Normalisasi: ${fmt(overAmount)}"><i data-lucide="arrow-right-left" class="w-4 h-4"></i></button>`;
-                    } else if (isNeg) {
-                        const topUpAmount = Math.abs(b.balance);
-                        transferBtn = `<button onclick='startTransferFromWd("${b.id}")' class="p-2 hover:bg-[rgba(255,68,68,0.2)] text-[var(--danger)] rounded transition" title="Bayar Hutang: ${fmt(topUpAmount)}"><i data-lucide="arrow-right-left" class="w-4 h-4"></i></button>`;
-                    } else if (isLow) {
-                        transferBtn = `<button onclick='startTransferFromWd("${b.id}")' class="p-2 hover:bg-[rgba(255,68,68,0.2)] text-[var(--danger)] rounded transition" title="Top Up: ${fmt(2e6 - b.balance)}"><i data-lucide="arrow-right-left" class="w-4 h-4"></i></button>`;
-                    }
-                    
-                    // Use template literal for content
-                    r.innerHTML = `
-                        <td class="px-4 py-3 align-top">
-                            <div class="font-bold text-sm ${nc} leading-tight">${b.name}</div>
-                            <div class="text-xs text-[var(--text-muted)] font-mono mt-1">${b.accountNumber}</div>
-                            <div class="text-xs text-[var(--text-muted)] mt-1">${b.maxTampung > 0 ? 'max ' + fmtNum(b.maxTampung / 1000000) + ' juta' : ''}</div>
-                            <div class="mt-2 flex gap-1">${catBadge} ${statusBadge}</div>
-                        </td>
-                        <td class="px-4 py-3 text-right align-middle">
-                            <div class="font-mono font-bold text-sm ${bc}">${fmt(b.balance)}</div>
-                        </td>
-                        ${isWd ? `<td class="px-4 py-3 text-right align-middle"><div class="font-mono text-sm text-[var(--text-muted)]">${fmtNum(b.fee)}</div></td><td class="px-4 py-3 text-center align-middle"><span class="pill ${b.status === 'ON' ? 'success' : 'danger'}">${b.status}</span></td>` : '<td class="px-4 py-3"></td><td class="px-4 py-3"></td>'}
-                        <td class="px-4 py-3 text-center align-middle">
-                            <div class="flex gap-1 justify-center">
-                                ${transferBtn}
-                                <button onclick='openEdit("${b.id}")' class="p-2 hover:bg-[rgba(255,255,255,0.1)] text-[var(--accent)] rounded transition" title="Edit">
-                                    <i data-lucide="edit-2" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </td>`;
-                    fragment.appendChild(r);
-                });
-                
-                tbody.appendChild(fragment);
-            }
-    
-            // Updated to be triggered manually
-            function showCriticalList() {
-                const criticalItems = banks.filter(b => b.balance < 0 || (b.type === 'WD' && b.balance <= 2e6 && b.balance > 0 && b.status === 'ON'));
-                if (criticalItems.length === 0) return;
-    
-                const l = document.getElementById('criticalList');
-                l.innerHTML = '';
-                
-                const fragment = document.createDocumentFragment();
-                criticalItems.forEach(a => {
-                    const d = document.createElement('div');
-                    d.className = 'flex justify-between items-center p-4 rounded bg-[rgba(255,68,68,0.1)] border-l-4 border-[var(--danger)]';
-                    d.innerHTML = `<div><div class="font-bold text-[var(--danger)]">${a.name}</div><div class="text-xs text-[var(--text-muted)]">${a.accountNumber}</div></div><div class="text-lg font-bold text-[var(--danger)] font-mono">${fmt(a.balance)}</div>`;
-                    fragment.appendChild(d);
-                });
-                l.appendChild(fragment);
-                openModal('criticalModal');
-            }
-    
-            function checkEmptyBalancePopup() {
-                // Function kept but call removed to prevent popup
-            }
-    
-            // Optimization: Debounce search input
-            document.getElementById('searchInput').addEventListener('input', e => { 
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(() => {
-                    filters.search = e.target.value.toLowerCase(); 
-                    updateUI(); 
-                }, 300); // 300ms delay
+            banks = newBanks;
+            restoreAllPINs();
+            requestAnimationFrame(() => {
+                updateUI();
+                statusEl.textContent = `LIVE — ${new Date().toLocaleTimeString('id-ID')}`;
+                dotEl.style.background = 'var(--emerald)';
+                dotEl.style.boxShadow = '0 0 8px var(--emerald)';
+                ic.classList.remove('animate-spin');
             });
-            
-            document.getElementById('typeFilter').addEventListener('change', e => { filters.type = e.target.value; saveFilters(); updateUI(); });
-            document.getElementById('categoryFilter').addEventListener('change', e => { filters.category = e.target.value; saveFilters(); updateUI(); });
-            document.getElementById('statusFilter').addEventListener('change', e => { filters.status = e.target.value; saveFilters(); updateUI(); });
-    
-            document.getElementById('transferNominal').addEventListener('input', e => {
-                const nominal = parseNumber(e.target.value);
-                if (selectedTransferKas && nominal > 0) {
-                    const summary = `DARI: ${selectedTransferKas.name} | KE: ${selectedTransferWd?.name || '-'} | NOMINAL: ${fmt(nominal)}`;
-                    document.getElementById('transferSummary').textContent = summary;
-                }
+        } catch(err) {
+            alert("Gagal mengambil data: " + err.message);
+            ic.classList.remove('animate-spin');
+            document.getElementById('statusText').textContent = 'ERROR';
+            dotEl.style.background = 'var(--crimson)';
+        }
+    }
+
+    function updateUI() {
+        const wdBody = document.getElementById('wdTableBody');
+        const kasBody = document.getElementById('kasTableBody');
+        wdBody.innerHTML = '';
+        kasBody.innerHTML = '';
+
+        let filtered = banks.filter(b => {
+            if (filters.search && !b.name.toLowerCase().includes(filters.search) && !b.accountNumber.includes(filters.search)) return false;
+            if (filters.type === 'WD' && b.type !== 'WD') return false;
+            if (filters.type === 'KAS' && b.type !== 'KAS') return false;
+            if (filters.category !== 'ALL' && b.category !== filters.category) return false;
+            if (filters.status !== 'ALL' && b.status !== filters.status) return false;
+            return true;
+        }).sort((a, b) => {
+            const aNeg = a.balance < 0, bNeg = b.balance < 0;
+            if (aNeg && !bNeg) return -1; if (!aNeg && bNeg) return 1;
+            const aLow = a.type === 'WD' && a.balance > 0 && a.balance < 2e6 && a.status === 'ON';
+            const bLow = b.type === 'WD' && b.balance > 0 && b.balance < 2e6 && b.status === 'ON';
+            if (aLow && !bLow) return -1; if (!aLow && bLow) return 1;
+            if (a.status === 'ON' && b.status === 'OFF') return -1; if (a.status === 'OFF' && b.status === 'ON') return 1;
+            return 0;
+        });
+
+        const wd = filtered.filter(b => b.type === 'WD');
+        const kas = filtered.filter(b => b.type === 'KAS').sort((a, b) => a.balance - b.balance);
+
+        let neg = 0, low = 0, act = 0;
+        for (const b of banks) {
+            if (b.balance < 0) neg++;
+            if (b.type === 'WD' && b.balance > 0 && b.balance < 2e6 && b.status === 'ON') low++;
+            if (b.status === 'ON') act++;
+        }
+        const total = filtered.filter(b => b.status === 'ON').reduce((a, b) => a + b.balance, 0);
+
+        const critCount = banks.filter(b => b.balance < 0 || (b.type === 'WD' && b.balance < 2e6 && b.balance > 0 && b.status === 'ON') || (b.maxTampung > 0 && b.balance > b.maxTampung)).length;
+        const attBtn = document.getElementById('attentionBtn');
+        const attCount = document.getElementById('attentionCount');
+        if (critCount > 0) {
+            attBtn.classList.remove('disabled');
+            attCount.textContent = critCount;
+            attCount.style.display = 'flex';
+        } else {
+            attBtn.classList.add('disabled');
+            attCount.style.display = 'none';
+        }
+
+        let totalFeeWD = 0, totalFeeKAS = 0;
+        for (const b of filtered) { if (b.type === 'WD') totalFeeWD += b.fee; }
+        for (const b of banks) { if (b.type === 'KAS' && b.fee) totalFeeKAS += b.fee; }
+
+        document.getElementById('totalSaldo').textContent = fmt(total);
+        document.getElementById('countNegative').textContent = neg;
+        document.getElementById('countLow').textContent = low;
+        document.getElementById('countActive').textContent = act;
+        document.getElementById('totalBiayaWD').textContent = fmtNum(totalFeeWD);
+        document.getElementById('totalBiayaKAS').textContent = fmtNum(totalFeeKAS);
+        document.getElementById('totalBiayaAll').textContent = fmtNum(totalFeeWD + totalFeeKAS);
+
+        document.getElementById('cardNegative').style.display = neg > 0 ? 'block' : 'none';
+        document.getElementById('cardLow').style.display = low > 0 ? 'block' : 'none';
+        document.getElementById('wdCount').textContent = `${wd.length} Rekening`;
+        document.getElementById('kasCount').textContent = `${kas.length} Rekening`;
+        document.getElementById('wdTableCard').style.display = (filters.type === 'ALL' || filters.type === 'WD') ? 'block' : 'none';
+        document.getElementById('kasTableCard').style.display = (filters.type === 'ALL' || filters.type === 'KAS') ? 'block' : 'none';
+
+        renderTable(wdBody, wd, true);
+        renderTable(kasBody, kas, false);
+        lucide.createIcons();
+    }
+
+    function renderTable(tbody, data, isWd) {
+        const frag = document.createDocumentFragment();
+        data.forEach(b => {
+            const isLow = b.balance < 2e6 && b.balance > 0 && b.status === 'ON' && isWd;
+            const isNeg = b.balance < 0;
+            const isOver = b.maxTampung > 0 && b.balance > b.maxTampung;
+
+            const r = document.createElement('tr');
+            let cls = 'row-normal';
+            if (b.status === 'OFF') cls = 'row-off';
+            else if (isOver) cls = 'row-warning';
+            else if (isNeg || isLow) cls = 'row-danger';
+            r.className = cls;
+
+            const nameCls = isOver ? 'warning' : (isNeg || isLow) ? 'danger' : '';
+            const balCls = isOver ? 'warning' : (isNeg || isLow) ? 'danger' : (isWd ? '' : 'kas');
+
+            const catBadge = `<span class="badge ${b.category === 'KOTOR' ? 'kotor' : 'bersih'}">${b.category}</span>`;
+            const stsBadge = `<span class="badge ${b.status === 'ON' ? 'on' : 'off'}">${b.status}</span>`;
+
+            let transferBtn = '';
+            if (isOver) {
+                const over = b.balance - b.maxTampung;
+                transferBtn = `<button type="button" onclick='startTransferFromWd("${b.id}")' class="act-btn transfer warning-style" title="Normalisasi: ${fmt(over)}"><i data-lucide="arrow-right-left"></i></button>`;
+            } else if (isNeg) {
+                transferBtn = `<button type="button" onclick='startTransferFromWd("${b.id}")' class="act-btn transfer" title="Bayar: ${fmt(Math.abs(b.balance))}"><i data-lucide="arrow-right-left"></i></button>`;
+            } else if (isLow) {
+                transferBtn = `<button type="button" onclick='startTransferFromWd("${b.id}")' class="act-btn transfer" title="Top Up: ${fmt(2e6 - b.balance)}"><i data-lucide="arrow-right-left"></i></button>`;
+            }
+
+            r.innerHTML = `
+                <td>
+                    <div class="cell-name ${nameCls}">${b.name}</div>
+                    <div class="cell-account">${b.accountNumber || '—'}</div>
+                    ${b.maxTampung > 0 ? `<div class="cell-max">max ${fmtNum(b.maxTampung / 1000000)} juta</div>` : ''}
+                    <div class="badge-row">${catBadge} ${stsBadge}</div>
+                </td>
+                <td style="text-align:right;">
+                    <div class="cell-balance ${balCls}">${fmt(b.balance)}</div>
+                </td>
+                ${isWd ? `<td><div class="cell-fee">${fmtNum(b.fee)}</div></td><td class="cell-center">${stsBadge}</td>` : '<td></td><td></td>'}
+                <td class="cell-center">
+                    <div style="display:flex;gap:4px;justify-content:center;align-items:center;">
+                        ${transferBtn}
+                        <button type="button" onclick='openEdit("${b.id}")' class="act-btn edit" title="Edit"><i data-lucide="edit-2"></i></button>
+                    </div>
+                </td>
+            `;
+            frag.appendChild(r);
+        });
+        tbody.appendChild(frag);
+    }
+
+    function showCriticalList() {
+        const items = banks.filter(b => b.balance < 0 || (b.type === 'WD' && b.balance <= 2e6 && b.balance > 0 && b.status === 'ON'));
+        if (!items.length) return;
+        const list = document.getElementById('criticalList');
+        list.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        items.forEach(a => {
+            const d = document.createElement('div');
+            d.className = 'critical-item';
+            d.innerHTML = `<div><div class="critical-name">${a.name}</div><div class="critical-account">${a.accountNumber}</div></div><div class="critical-amount">${fmt(a.balance)}</div>`;
+            frag.appendChild(d);
+        });
+        list.appendChild(frag);
+        openModal('criticalModal');
+    }
+
+    function copyToClipboard(id) {
+        const val = document.getElementById(id).value;
+        navigator.clipboard.writeText(val).then(() => alert('✅ Berhasil dicopy:\n' + val)).catch(() => alert('Gagal copy, silakan copy manual'));
+    }
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => { filters.search = e.target.value.toLowerCase(); updateUI(); }, 300);
+    });
+    document.getElementById('typeFilter').addEventListener('change', e => { filters.type = e.target.value; saveFilters(); updateUI(); });
+    document.getElementById('categoryFilter').addEventListener('change', e => { filters.category = e.target.value; saveFilters(); updateUI(); });
+    document.getElementById('statusFilter').addEventListener('change', e => { filters.status = e.target.value; saveFilters(); updateUI(); });
+    document.getElementById('transferNominal').addEventListener('input', e => {
+        const n = parseNumber(e.target.value);
+        if (selectedTransferKas && n > 0)
+            document.getElementById('transferSummary').textContent = `${selectedTransferKas.name} → ${selectedTransferWd?.name || '—'} | ${fmt(n)}`;
+    });
+
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function startTransferFromWd(wdId) {
+        const wd = banks.find(b => b.id === wdId);
+        if (!wd) return;
+        selectedTransferWd = wd;
+        loadTransferMenuFromWd(wd);
+    }
+
+    function loadTransferMenuFromWd(wd) {
+        const list = document.getElementById('transferMenuList');
+        list.innerHTML = '';
+        const title = document.getElementById('transferMenuTitle');
+        title.innerHTML = `<i data-lucide="arrow-right-left" style="width:16px;height:16px;"></i> PILIH KAS ${wd.category} UNTUK TRANSFER`;
+        const frag = document.createDocumentFragment();
+        banks.filter(b => b.type === 'KAS' && b.status === 'ON' && b.category === wd.category)
+            .sort((a, b) => b.balance - a.balance)
+            .forEach(a => {
+                const d = document.createElement('div');
+                d.className = 'transfer-item';
+                d.innerHTML = `<div><div class="transfer-item-name">${a.name}</div><div class="transfer-item-account">${a.accountNumber}</div></div><div class="transfer-item-balance">${fmt(a.balance)}</div>`;
+                d.onclick = () => openTransferForm(a, wd);
+                frag.appendChild(d);
             });
-    
-            function openModal(id) { document.getElementById(id).classList.add('active'); }
-            function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-    
-            function startTransferFromWd(wdId) {
-                const wdBank = banks.find(b => b.id === wdId);
-                if (!wdBank) return;
-                selectedTransferWd = wdBank;
-                loadTransferMenuFromWd(wdBank);
-            }
-    
-            function loadTransferMenuFromWd(wdBank) {
-                const l = document.getElementById('transferMenuList');
-                l.innerHTML = '';
-                const title = document.querySelector('#transferMenuModal .text-xl');
-                const categoryLabel = wdBank.category === 'KOTOR' ? 'KOTOR' : 'BERSIH';
-                if (title) title.innerHTML = `<i data-lucide="arrow-right-left" class="w-6 h-6"></i> PILIH KAS ${categoryLabel} UNTUK TRANSFER`;
-                
-                const fragment = document.createDocumentFragment();
-                banks.filter(b => b.type === 'KAS' && b.status === 'ON' && b.category === wdBank.category).sort((a, b) => b.balance - a.balance).forEach(a => {
-                    const d = document.createElement('div');
-                    d.className = 'flex justify-between items-center p-4 rounded bg-[rgba(34,204,136,0.05)] border border-[rgba(34,204,136,0.2)] hover:bg-[rgba(34,204,136,0.1)] cursor-pointer transition';
-                    d.innerHTML = `<div><div class="font-bold text-[var(--text)]">${a.name}</div><div class="text-xs text-[var(--text-muted)] font-mono">${a.accountNumber}</div></div><div class="text-lg font-bold text-[var(--success)] font-mono">${fmt(a.balance)}</div>`;
-                    d.onclick = () => openTransferForm(a, wdBank);
-                    fragment.appendChild(d);
-                });
-                l.appendChild(fragment);
-                lucide.createIcons();
-                openModal('transferMenuModal');
-            }
-    
-            function calculateMaxTransfer(wdBank) {
-                if (!wdBank) return 0;
-                
-                // Jika saldo minus, suggest jumlah untuk bayar hutang
-                if (wdBank.balance < 0) {
-                    return Math.abs(wdBank.balance);
-                }
-                
-                // Jika saldo melebihi max tampung, suggest untuk normalisasi
-                if (wdBank.maxTampung > 0 && wdBank.balance > wdBank.maxTampung) {
-                    return wdBank.balance - wdBank.maxTampung;
-                }
-                
-                // Jika saldo antara 0-2 juta, suggest berapa bisa ditransfer
-                if (wdBank.balance < 2e6 && wdBank.balance > 0 && wdBank.maxTampung > 0) {
-                    return Math.max(0, wdBank.maxTampung - wdBank.balance);
-                }
-                
-                return 0;
-            }
+        list.appendChild(frag);
+        lucide.createIcons();
+        openModal('transferMenuModal');
+    }
 
-            function setSuggestedMaxTransfer() {
-                const suggestedAmount = calculateMaxTransfer(selectedTransferWd);
-                if (suggestedAmount > 0) {
-                    document.getElementById('transferNominal').value = suggestedAmount;
-                    validateTransferNominal();
-                }
-            }
+    function calculateMaxTransfer(wd) {
+        if (!wd) return 0;
+        if (wd.balance < 0) return Math.abs(wd.balance);
+        if (wd.maxTampung > 0 && wd.balance > wd.maxTampung) return wd.balance - wd.maxTampung;
+        if (wd.balance < 2e6 && wd.balance > 0 && wd.maxTampung > 0) return Math.max(0, wd.maxTampung - wd.balance);
+        return 0;
+    }
 
-            function validateTransferNominal() {
-                const nominal = parseNumber(document.getElementById('transferNominal').value);
-                const maxTampung = selectedTransferWd ? selectedTransferWd.maxTampung : 0;
-                const exceedBox = document.getElementById('exceedMaxBox');
-                const submitBtn = document.getElementById('transferSubmitBtn');
-                
-                if (nominal > 0 && maxTampung > 0 && nominal > maxTampung) {
-                    // Melebihi max tampung
-                    const exceed = nominal - maxTampung;
-                    document.getElementById('exceedMaxText').textContent = `Nominal ${fmt(nominal)} melebihi max tampung ${fmt(maxTampung)} sebesar ${fmt(exceed)}`;
-                    exceedBox.style.display = 'block';
-                    submitBtn.disabled = true;
-                    submitBtn.style.opacity = '0.5';
-                    submitBtn.style.cursor = 'not-allowed';
-                } else {
-                    // Normal
-                    exceedBox.style.display = 'none';
-                    submitBtn.disabled = false;
-                    submitBtn.style.opacity = '1';
-                    submitBtn.style.cursor = 'pointer';
-                }
-            }
+    function setSuggestedMaxTransfer() {
+        const s = calculateMaxTransfer(selectedTransferWd);
+        if (s > 0) { document.getElementById('transferNominal').value = s; validateTransferNominal(); }
+    }
 
-            function openTransferForm(kasData, wdBank = null) {
-                selectedTransferKas = kasData;
-                selectedTransferWd = wdBank;
-                document.getElementById('transferFromName').value = kasData.name;
-                if (wdBank) {
-                    document.getElementById('transferToName').value = wdBank.name;
-                    document.getElementById('transferToAccount').value = wdBank.accountNumber;
-                } else {
-                    document.getElementById('transferToName').value = '';
-                    document.getElementById('transferToAccount').value = '';
-                }
-                document.getElementById('transferNominal').value = '';
-                
-                // 🔐 Load PIN langsung dari localStorage untuk memastikan selalu terbaru
-                const savedPin = loadPIN(kasData.id);
-                const displayPin = savedPin && savedPin.trim() ? savedPin : 'BELUM ADA PIN';
-                document.getElementById('transferPIN').value = displayPin;
-                if (!savedPin || !savedPin.trim()) {
-                    document.getElementById('transferPIN').style.color = '#ff4444';
-                } else {
-                    document.getElementById('transferPIN').style.color = '#ffd700';
-                }
-                document.getElementById('transferSummary').textContent = '-';
-                document.getElementById('exceedMaxBox').style.display = 'none';
-                
-                const suggestBox = document.getElementById('suggestMaxTransferBox');
-                const submitBtn = document.getElementById('transferSubmitBtn');
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.style.cursor = 'pointer';
-                
-                // Tampilkan suggestion jika balance minus, < 2 juta, atau > max tampung
-                if (wdBank) {
-                    if (wdBank.balance < 0) {
-                        // Saldo minus - suggest bayar hutang
-                        const hutang = Math.abs(wdBank.balance);
-                        document.getElementById('suggestMaxTransferAmount').textContent = fmt(hutang) + ' (Bayar Hutang)';
-                        suggestBox.style.display = 'block';
-                    } else if (wdBank.maxTampung > 0 && wdBank.balance > wdBank.maxTampung) {
-                        // Saldo melebihi max tampung - suggest normalisasi
-                        const overAmount = wdBank.balance - wdBank.maxTampung;
-                        document.getElementById('suggestMaxTransferAmount').textContent = fmt(overAmount) + ' (Normalisasi)';
-                        suggestBox.style.display = 'block';
-                    } else if (wdBank.balance < 2e6 && wdBank.balance > 0 && wdBank.maxTampung > 0) {
-                        // Saldo 0-2 juta - suggest maximal transfer ke max tampung
-                        const maxCanTransfer = Math.max(0, wdBank.maxTampung - wdBank.balance);
-                        if (maxCanTransfer > 0) {
-                            document.getElementById('suggestMaxTransferAmount').textContent = fmt(maxCanTransfer) + ' (Maximal Transfer)';
-                            suggestBox.style.display = 'block';
-                        } else {
-                            document.getElementById('suggestMaxTransferAmount').textContent = 'Rp 0 (Max Tampung belum diatur)';
-                            suggestBox.style.display = 'block';
-                        }
-                    } else {
-                        suggestBox.style.display = 'none';
-                    }
-                } else {
-                    suggestBox.style.display = 'none';
-                }
-                
-                closeModal('transferMenuModal');
-                lucide.createIcons();
-                openModal('transferFormModal');
+    function validateTransferNominal() {
+        const n = parseNumber(document.getElementById('transferNominal').value);
+        const max = selectedTransferWd ? selectedTransferWd.maxTampung : 0;
+        const exceedBox = document.getElementById('exceedMaxBox');
+        const submitBtn = document.getElementById('transferSubmitBtn');
+        if (n > 0 && max > 0 && n > max) {
+            document.getElementById('exceedMaxText').textContent = `Nominal ${fmt(n)} melebihi max tampung ${fmt(max)} sebesar ${fmt(n - max)}`;
+            exceedBox.style.display = 'block';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.4';
+        } else {
+            exceedBox.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        }
+    }
+
+    function openTransferForm(kasData, wdBank = null) {
+        selectedTransferKas = kasData;
+        selectedTransferWd = wdBank;
+        document.getElementById('transferFromName').value = kasData.name;
+        if (wdBank) {
+            document.getElementById('transferToName').value = wdBank.name;
+            document.getElementById('transferToAccount').value = wdBank.accountNumber;
+        } else {
+            document.getElementById('transferToName').value = '';
+            document.getElementById('transferToAccount').value = '';
+        }
+        document.getElementById('transferNominal').value = '';
+        document.getElementById('transferSummary').textContent = '—';
+        document.getElementById('exceedMaxBox').style.display = 'none';
+
+        const pin = loadPIN(kasData.id);
+        const pinInp = document.getElementById('transferPIN');
+        pinInp.value = pin || 'BELUM ADA PIN';
+        pinInp.style.color = pin ? 'var(--gold)' : 'var(--crimson)';
+
+        const suggestBox = document.getElementById('suggestMaxTransferBox');
+        document.getElementById('transferSubmitBtn').disabled = false;
+        document.getElementById('transferSubmitBtn').style.opacity = '1';
+
+        if (wdBank) {
+            if (wdBank.balance < 0) {
+                document.getElementById('suggestMaxTransferAmount').textContent = fmt(Math.abs(wdBank.balance)) + ' (Bayar Hutang)';
+                suggestBox.style.display = 'block';
+            } else if (wdBank.maxTampung > 0 && wdBank.balance > wdBank.maxTampung) {
+                document.getElementById('suggestMaxTransferAmount').textContent = fmt(wdBank.balance - wdBank.maxTampung) + ' (Normalisasi)';
+                suggestBox.style.display = 'block';
+            } else if (wdBank.balance < 2e6 && wdBank.balance > 0 && wdBank.maxTampung > 0) {
+                const can = Math.max(0, wdBank.maxTampung - wdBank.balance);
+                document.getElementById('suggestMaxTransferAmount').textContent = fmt(can) + ' (Maximal Transfer)';
+                suggestBox.style.display = 'block';
+            } else {
+                suggestBox.style.display = 'none';
             }
-    
-            function handleTransferSubmit(e) {
-                e.preventDefault();
-                const nominal = parseNumber(document.getElementById('transferNominal').value);
-                const displayedPin = document.getElementById('transferPIN').value.trim();
-                
-                if (!selectedTransferKas || nominal <= 0) {
-                    alert('⚠️ Nominal tidak valid');
-                    return;
-                }
-                
-                if (!displayedPin || displayedPin.includes('❌')) {
-                    alert('⚠️ PIN Keamanan belum tersimpan!\n\nSilakan atur PIN di menu Edit Rekening terlebih dahulu.');
-                    return;
-                }
-                
-                if (!/^\d{6,10}$/.test(displayedPin)) {
-                    alert('⚠️ Format PIN tidak valid (harus 6-10 digit)');
-                    return;
-                }
-                
-                const kasName = selectedTransferKas.name;
-                const toName = document.getElementById('transferToName').value;
-                const toAccount = document.getElementById('transferToAccount').value;
-                const message = `DARI REKENING KAS:\n${kasName}\n\nKE REKENING WD:\n${toName}\n${toAccount}\n\nNOMINAL:\n${fmt(nominal)}\n\n🔐 PIN: ${displayedPin}\n✅ Terverifikasi`;
-                alert('✅ Transfer Berhasil Diproses:\n\n' + message);
-                closeModal('transferFormModal');
-            }
-    
-            function openEdit(id) {
-                const b = banks.find(x => x.id === id);
-                if (!b) return;
-                document.getElementById('editId').value = b.id;
-                document.getElementById('editName').value = b.name;
-                document.getElementById('editAccount').value = b.accountNumber;
-                document.getElementById('editBalance').value = b.balance;
-                document.getElementById('editStatus').value = b.status;
-                document.getElementById('editPIN').value = b.pin || '';
-                openModal('editModal');
-            }
-    
-            function handleSaveEdit(e) {
-                e.preventDefault();
-                const id = document.getElementById('editId').value;
-                const pin = document.getElementById('editPIN').value.trim();
-                const idx = banks.findIndex(b => b.id === id);
-                if (idx > -1) {
-                    banks[idx].accountNumber = document.getElementById('editAccount').value;
-                    banks[idx].balance = Number(document.getElementById('editBalance').value);
-                    banks[idx].status = document.getElementById('editStatus').value;
-                    if (pin && !/^\d{6,10}$/.test(pin)) {
-                        alert('PIN harus 6-10 digit angka atau kosongkan');
-                        return;
-                    }
-                    banks[idx].pin = pin || '';
-                    savePIN(id, pin); // Save PIN ke localStorage
-                    updateUI();
-                    closeModal('editModal');
-                    alert("Perubahan disimpan" + (pin ? '\nPIN tersimpan!' : ''));
-                }
-            }
-    
-            // Format biaya untuk copy ke Docs/Sheets
-            function copyBiayaFormatWD() {
-                const wdBanks = banks.filter(b => b.type === 'WD' && b.fee > 0);
-                if (wdBanks.length === 0) {
-                    alert('Tidak ada biaya WD untuk dicopy');
-                    return;
-                }
-                
-                let text = '';
-                wdBanks.forEach(b => {
-                    text += `${b.name}\tBIAYA WD\t${fmtNum(b.fee)}\n`;
-                });
-                
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('✅ Format WD berhasil dicopy! Siap paste ke Docs/Sheets');
-                }).catch(() => {
-                    alert('Gagal copy, silakan copy manual');
-                });
-            }
-    
-            function copyBiayaFormatKAS() {
-                const kasBanks = banks.filter(b => b.type === 'KAS' && b.fee > 0);
-                if (kasBanks.length === 0) {
-                    alert('Tidak ada biaya KAS untuk dicopy');
-                    return;
-                }
-                
-                let text = '';
-                kasBanks.forEach(b => {
-                    text += `${b.name}\tBIAYA KAS\t${fmtNum(b.fee)}\n`;
-                });
-                
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('✅ Format KAS berhasil dicopy! Siap paste ke Docs/Sheets');
-                }).catch(() => {
-                    alert('Gagal copy, silakan copy manual');
-                });
-            }
-    
-            function copyBiayaFormatAll() {
-                const wdBanks = banks.filter(b => b.type === 'WD' && b.fee > 0);
-                const kasBanks = banks.filter(b => b.type === 'KAS' && b.fee > 0);
-                
-                if (wdBanks.length === 0 && kasBanks.length === 0) {
-                    alert('Tidak ada biaya untuk dicopy');
-                    return;
-                }
-                
-                let text = '';
-                
-                // WD Section
-                if (wdBanks.length > 0) {
-                    wdBanks.forEach(b => {
-                        text += `${b.name}\tBIAYA WD\t${fmtNum(b.fee)}\n`;
-                    });
-                    text += '\n';
-                }
-                
-                // KAS Section
-                if (kasBanks.length > 0) {
-                    kasBanks.forEach(b => {
-                        text += `${b.name}\tBIAYA KAS\t${fmtNum(b.fee)}\n`;
-                    });
-                }
-                
-                navigator.clipboard.writeText(text).then(() => {
-                    alert('✅ Semua format berhasil dicopy! Siap paste ke Docs/Sheets');
-                }).catch(() => {
-                    alert('Gagal copy, silakan copy manual');
-                });
-            }
-    
-            loadFilters(); // Muat filter dari localStorage
-            fetchData();
-            setInterval(fetchData, 30000);
-            lucide.createIcons();
-        </script>
-    </body>
-    </html>
-    
+        } else {
+            suggestBox.style.display = 'none';
+        }
+
+        closeModal('transferMenuModal');
+        lucide.createIcons();
+        openModal('transferFormModal');
+    }
+
+    function handleTransferSubmit(e) {
+        e.preventDefault();
+        const nominal = parseNumber(document.getElementById('transferNominal').value);
+        const pin = document.getElementById('transferPIN').value.trim();
+        if (!selectedTransferKas || nominal <= 0) { alert('⚠️ Nominal tidak valid'); return; }
+        if (!pin || pin === 'BELUM ADA PIN') { alert('⚠️ PIN belum tersimpan. Edit rekening terlebih dahulu.'); return; }
+        if (!/^\d{6,10}$/.test(pin)) { alert('⚠️ Format PIN tidak valid (6–10 digit)'); return; }
+        alert(`✅ TRANSFER BERHASIL\n\nDari: ${selectedTransferKas.name}\nKe: ${document.getElementById('transferToName').value}\nNo. Rek: ${document.getElementById('transferToAccount').value}\nNominal: ${fmt(nominal)}\nPIN: ${pin}`);
+        closeModal('transferFormModal');
+    }
+
+    function openEdit(id) {
+        const b = banks.find(x => x.id === id);
+        if (!b) return;
+        document.getElementById('editId').value = b.id;
+        document.getElementById('editName').value = b.name;
+        document.getElementById('editAccount').value = b.accountNumber;
+        document.getElementById('editBalance').value = b.balance;
+        document.getElementById('editStatus').value = b.status;
+        document.getElementById('editPIN').value = b.pin || '';
+        openModal('editModal');
+    }
+
+    function handleSaveEdit(e) {
+        e.preventDefault();
+        const id = document.getElementById('editId').value;
+        const pin = document.getElementById('editPIN').value.trim();
+        const idx = banks.findIndex(b => b.id === id);
+        if (idx > -1) {
+            if (pin && !/^\d{6,10}$/.test(pin)) { alert('PIN harus 6–10 digit angka'); return; }
+            banks[idx].accountNumber = document.getElementById('editAccount').value;
+            banks[idx].balance = Number(document.getElementById('editBalance').value);
+            banks[idx].status = document.getElementById('editStatus').value;
+            banks[idx].pin = pin || '';
+            savePIN(id, pin);
+            updateUI();
+            closeModal('editModal');
+            alert('✅ Perubahan berhasil disimpan' + (pin ? '\n🔐 PIN tersimpan!' : ''));
+        }
+    }
+
+    function copyBiayaFormatWD() {
+        const rows = banks.filter(b => b.type === 'WD' && b.fee > 0);
+        if (!rows.length) { alert('Tidak ada biaya WD'); return; }
+        navigator.clipboard.writeText(rows.map(b => `${b.name}\tBIAYA WD\t${fmtNum(b.fee)}`).join('\n'))
+            .then(() => alert('✅ Format WD berhasil dicopy!')).catch(() => alert('Gagal copy'));
+    }
+
+    function copyBiayaFormatKAS() {
+        const rows = banks.filter(b => b.type === 'KAS' && b.fee > 0);
+        if (!rows.length) { alert('Tidak ada biaya KAS'); return; }
+        navigator.clipboard.writeText(rows.map(b => `${b.name}\tBIAYA KAS\t${fmtNum(b.fee)}`).join('\n'))
+            .then(() => alert('✅ Format KAS berhasil dicopy!')).catch(() => alert('Gagal copy'));
+    }
+
+    function copyBiayaFormatAll() {
+        const wd = banks.filter(b => b.type === 'WD' && b.fee > 0);
+        const kas = banks.filter(b => b.type === 'KAS' && b.fee > 0);
+        if (!wd.length && !kas.length) { alert('Tidak ada biaya untuk dicopy'); return; }
+        const lines = [
+            ...wd.map(b => `${b.name}\tBIAYA WD\t${fmtNum(b.fee)}`),
+            ...(wd.length && kas.length ? [''] : []),
+            ...kas.map(b => `${b.name}\tBIAYA KAS\t${fmtNum(b.fee)}`)
+        ];
+        navigator.clipboard.writeText(lines.join('\n'))
+            .then(() => alert('✅ Semua format berhasil dicopy!')).catch(() => alert('Gagal copy'));
+    }
+
+    // Init
+    loadFilters();
+    fetchData();
+    setInterval(fetchData, 30000);
+    lucide.createIcons();
+</script>
+</body>
+</html>
